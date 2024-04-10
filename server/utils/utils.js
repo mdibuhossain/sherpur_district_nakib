@@ -20,7 +20,7 @@ export async function createPost(payload, filename, authorId) {
 
 export async function updatePost(payload, filename) {
   try {
-    payload.bannerImg = filename;
+    if (filename) payload.bannerImg = filename;
     const result = await prisma.post.update({
       where: { id: payload.id },
       data: payload,

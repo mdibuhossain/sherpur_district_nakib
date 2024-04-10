@@ -1,36 +1,31 @@
-import prisma from "../db/db.config.js";
-import { createPost, updatePost } from "../utils/utils.js";
+import prisma from "../db/db.config";
+import { createPost, updatePost } from "../utils/utils";
 
-export class districtOverviewController {
-  static async getDistricInfos(req, res) {
+export class restaurantController {
+  static getRestaurants = async (req, res) => {
     try {
-      const result = await prisma.districtInfo.findMany({
-        include: {
-          description: true,
-        },
-      });
+      const result = await prisma.restaurant.findMany();
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }
-  }
-  static async getDistrictInfoById(req, res) {
-    const { id } = req.params;
+  };
+
+  static getRestaurantById = async (req, res) => {
     try {
-      const result = await prisma.districtInfo.findUnique({
+      const { id } = req.params;
+      const result = await prisma.restaurant.findUnique({
         where: {
           id: parseInt(id),
         },
-        include: {
-          description: true,
-        },
       });
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }
-  }
-  static async createDistrictInfo(req, res) {
+  };
+
+  static createRestaurant = async (req, res) => {
     try {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
@@ -41,7 +36,7 @@ export class districtOverviewController {
           res.user.id
         );
       }
-      const result = await prisma.districtInfo.create({
+      const result = await prisma.restaurant.create({
         data: payload,
         include: {
           description: true,
@@ -51,8 +46,9 @@ export class districtOverviewController {
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }
-  }
-  static async updateDistrictInfo(req, res) {
+  };
+
+  static updateRestaurant = async (req, res) => {
     try {
       const { id } = req.params;
       let { payload, post } = req.body;
@@ -63,7 +59,7 @@ export class districtOverviewController {
           req?.file?.filename
         );
       }
-      const result = await prisma.districtInfo.update({
+      const result = await prisma.restaurant.update({
         where: {
           id: parseInt(id),
         },
@@ -76,11 +72,12 @@ export class districtOverviewController {
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }
-  }
-  static async deleteDistrictInfo(req, res) {
-    const { id } = req.params;
+  };
+
+  static deleteRestaurant = async (req, res) => {
     try {
-      await prisma.districtInfo.delete({
+      const { id } = req.params;
+      await prisma.restaurant.delete({
         where: {
           id: parseInt(id),
         },
@@ -89,5 +86,5 @@ export class districtOverviewController {
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }
-  }
+  };
 }

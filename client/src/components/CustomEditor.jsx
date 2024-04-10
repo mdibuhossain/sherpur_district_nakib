@@ -1,4 +1,6 @@
+/* eslint-disable react/prop-types */
 import React from "react";
+import axios from "axios";
 import Editor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 
@@ -25,7 +27,7 @@ const CustomEditor = ({ editorContent, setEditorContent, isPostAdded }) => {
         try {
           axios
             .post(
-              `${process.env.VITE_APP_PUBLIC_SERVER}/api/upload/single`,
+              `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upload/single`,
               formData
             )
             .then((resp) => {
