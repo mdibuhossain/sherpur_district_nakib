@@ -1,0 +1,163 @@
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+enum RoleType {
+  ADMIN
+  USER
+}
+
+model User {
+  id        Int      @id @default(autoincrement())
+  name      String?
+  username  String   @unique
+  password  String
+  role      RoleType @default(USER)
+  updatedAt DateTime @updatedAt
+  createdAt DateTime @default(now())
+  posts     Post[]
+}
+
+model Post {
+  id              Int              @id @default(autoincrement())
+  postTitle       String?
+  content         String
+  bannerImg       String?
+  isVisible       Boolean          @default(false)
+  updatedAt       DateTime         @updatedAt
+  createdAt       DateTime         @default(now())
+  author          User             @relation(fields: [authorId], references: [id])
+  authorId        Int
+  banks           Bank[]
+  upazilas        Upazila[]
+  hospitals       Hospital[]
+  restaurants     Restaurant[]
+  touristSpots    TouristSpot[]
+  districtInfo    DistrictInfo[]
+  educationPlaces EducationPlace[]
+}
+
+model DistrictInfo {
+  id          Int      @id @default(autoincrement())
+  title       String
+  description Post?    @relation(fields: [postId], references: [id])
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  postId      Int?
+}
+
+model Upazila {
+  id              Int              @id @default(autoincrement())
+  name            String
+  geoLocation     String?
+  stationAddress  String?
+  bannerImg       String?
+  createdAt       DateTime         @default(now())
+  updatedAt       DateTime         @updatedAt
+  description     Post             @relation(fields: [postId], references: [id])
+  postId          Int
+  banks           Bank[]
+  unions          Union[]
+  hospitals       Hospital[]
+  restaurants     Restaurant[]
+  touristSpots    TouristSpot[]
+  educationPlaces EducationPlace[]
+}
+
+model Union {
+  id        Int      @id @default(autoincrement())
+  name      String
+  bannerImg String?
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+  upazila   Upazila  @relation(fields: [upazilaId], references: [id])
+  upazilaId Int
+}
+
+model Bank {
+  id          Int      @id @default(autoincrement())
+  name        String
+  address     String
+  contact     String?
+  bannerImg   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description Post     @relation(fields: [postId], references: [id])
+  upazila     Upazila  @relation(fields: [upazilaId], references: [id])
+  upazilaId   Int
+  postId      Int
+}
+
+model Restaurant {
+  id          Int      @id @default(autoincrement())
+  name        String
+  address     String
+  contact     String?
+  bannerImg   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description Post     @relation(fields: [postId], references: [id])
+  upazila     Upazila  @relation(fields: [upazilaId], references: [id])
+  upazilaId   Int
+  postId      Int
+}
+
+model EducationPlace {
+  id          Int      @id @default(autoincrement())
+  name        String
+  address     String
+  contact     String?
+  bannerImg   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description Post     @relation(fields: [postId], references: [id])
+  upazila     Upazila  @relation(fields: [upazilaId], references: [id])
+  upazilaId   Int
+  postId      Int
+}
+
+model Hospital {
+  id          Int      @id @default(autoincrement())
+  seats       Int
+  name        String
+  address     String
+  contact     String?
+  bannerImg   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description Post     @relation(fields: [postId], references: [id])
+  upazila     Upazila  @relation(fields: [upazilaId], references: [id])
+  upazilaId   Int
+  doctors     Doctor[]
+  postId      Int
+}
+
+model Doctor {
+  id          Int      @id @default(autoincrement())
+  name        String
+  designation String
+  contact     String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  hospital    Hospital @relation(fields: [hospitalId], references: [id])
+  hospitalId  Int
+}
+
+model TouristSpot {
+  id          Int      @id @default(autoincrement())
+  name        String
+  address     String
+  contact     String?
+  bannerImg   String?
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+  description Post     @relation(fields: [postId], references: [id])
+  upazila     Upazila  @relation(fields: [upazilaId], references: [id])
+  upazilaId   Int
+  postId      Int
+}
