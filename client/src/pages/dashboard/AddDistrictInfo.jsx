@@ -40,7 +40,7 @@ const AddDistrictInfo = () => {
     try {
       axios
         .post(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/district-info`,
+          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`,
           formData,
           {
             headers: {

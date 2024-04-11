@@ -14,7 +14,12 @@ const __dirname = path.dirname(fileURLToPath(import.meta.url));
 const app = express();
 dotenv.config();
 
-app.use(cors());
+app.use(
+  cors({
+    credentials: true,
+    origin: true,
+  })
+);
 app.use(helmet());
 app.use(cookieParser());
 app.use(express.json());

@@ -55,4 +55,15 @@ export class authController {
       return res.status(500).json({ errors: error.messages });
     }
   }
+  static async profile(req, res) {
+    try {
+      const findUser = await prisma.user.findUnique({
+        where: { id: req.user.id },
+      });
+      const { password, ...result } = findUser;
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(500).json({ errors: error.messages });
+    }
+  }
 }
