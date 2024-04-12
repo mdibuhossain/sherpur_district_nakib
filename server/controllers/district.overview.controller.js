@@ -38,7 +38,7 @@ export class districtOverviewController {
         payload.postId = await createPost(
           JSON.parse(post),
           req.file.filename,
-          res.user.id
+          req.user.id
         );
       }
       const result = await prisma.districtInfo.create({

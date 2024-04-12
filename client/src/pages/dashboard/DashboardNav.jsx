@@ -2,6 +2,7 @@ import { useContext } from "react";
 import { Outlet, NavLink } from "react-router-dom";
 import { AuthContext } from "../../contexts/auth.context";
 import { ADMIN_NAVs, USER_NAVs, COMMON_NAVs } from "../../utils/links";
+import DashboardLayout from "./layout";
 
 const NavListView = (NavList) => {
   return NavList.map((nav) => (
@@ -30,11 +31,11 @@ const DashboardNav = () => {
           {/* slidebar innner floating bar */}
           <div className="p-3 m-3 w-full bg-[#1c2333] rounded-lg overflow-y-auto relative space-y-2">
             <div className="p-1 ps-2 text-white font-extrabold text-4xl mb-10">
-              Sherpur
+              শেরপুর
             </div>
             <div className="flex flex-col gap-y-2 font-light text-white overflow-auto">
-              {user?.role !== "SYSTEM_ADMIN" ? NavListView(ADMIN_NAVs) : null}
-              {user?.role === "STS_MANAGER" ? NavListView(USER_NAVs) : null}
+              {user?.role === "ADMIN" ? NavListView(ADMIN_NAVs) : null}
+              {user?.role === "USER" ? NavListView(USER_NAVs) : null}
               {NavListView(COMMON_NAVs)}
             </div>
             <button
@@ -46,9 +47,9 @@ const DashboardNav = () => {
           </div>
         </div>
         {/* Dynamic page */}
-        <div className="overflow-auto w-full p-3 h-screen">
+        <DashboardLayout>
           <Outlet />
-        </div>
+        </DashboardLayout>
       </div>
     </div>
   );

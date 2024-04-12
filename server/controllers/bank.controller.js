@@ -1,5 +1,5 @@
-import prisma from "../db/db.config";
-import { createPost, updatePost } from "../utils/utils";
+import prisma from "../db/db.config.js";
+import { createPost, updatePost } from "../utils/utils.js";
 
 export class bankController {
   static getBanks = async (req, res) => {
@@ -33,7 +33,7 @@ export class bankController {
         payload.postId = await createPost(
           JSON.parse(post),
           req.file.filename,
-          res.user.id
+          req.user.id
         );
       }
       const result = await prisma.bank.create({
@@ -77,7 +77,7 @@ export class bankController {
   static deleteBank = async (req, res) => {
     try {
       const { id } = req.params;
-      const result = await prisma.bank.delete({
+      await prisma.bank.delete({
         where: {
           id: parseInt(id),
         },

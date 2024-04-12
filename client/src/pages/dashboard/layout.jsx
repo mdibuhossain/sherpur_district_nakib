@@ -1,7 +1,7 @@
-import React from "react";
-
 const DashboardLayout = ({ children }) => {
-  return <div className="w-10/12 m-auto">{children}</div>;
+  return (
+    <div className="w-full m-auto h-screen overflow-auto p-3">{children}</div>
+  );
 };
 
 export default DashboardLayout;

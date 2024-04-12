@@ -8,6 +8,13 @@ import { fileURLToPath } from "url";
 import authRouter from "./routers/auth.router.js";
 import districtOverviewRouter from "./routers/district.overview.router.js";
 import multer from "multer";
+import blogRouter from "./routers/blog.router.js";
+import bankRouter from "./routers/bank.router.js";
+import educationPlaceRouter from "./routers/education.place.router.js";
+import hospitalRouter from "./routers/hospital.router.js";
+import restaurantRouter from "./routers/restaurant.router.js";
+import touristSpotRouter from "./routers/touristspot.router.js";
+import upazilaRouter from "./routers/upazila.router.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -26,7 +33,14 @@ app.use(express.json());
 app.use(express.static(path.join(__dirname, "public")));
 
 app.use("/api/auth", authRouter);
+app.use("/api/bank", bankRouter);
+app.use("/api/blog", blogRouter);
 app.use("/api/district-info", districtOverviewRouter);
+app.use("/api/education-place", educationPlaceRouter);
+app.use("/api/hospital", hospitalRouter);
+app.use("/api/restaurant", restaurantRouter);
+app.use("/api/touristspot", touristSpotRouter);
+app.use("/api/upazila", upazilaRouter);
 
 app.get("/", (req, res) => {
   res.send("Server is ready");

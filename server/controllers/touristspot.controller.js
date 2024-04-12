@@ -1,5 +1,5 @@
-import prisma from "../db/db.config";
-import { createPost, updatePost } from "../utils/utils";
+import prisma from "../db/db.config.js";
+import { createPost, updatePost } from "../utils/utils.js";
 
 export class touristspotController {
   static getTouristspots = async (req, res) => {
@@ -33,7 +33,7 @@ export class touristspotController {
         payload.postId = await createPost(
           JSON.parse(post),
           req.file.filename,
-          res.user.id
+          req.user.id
         );
       }
       const result = await prisma.touristSpot.create({

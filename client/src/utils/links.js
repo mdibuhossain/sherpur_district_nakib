@@ -1,5 +1,5 @@
 export const ADMIN_NAVs = [
-  { name: "Posts", path: "/dashboard/posts" },
+  { name: "সকল ব্লগ", path: "/dashboard/blogs" },
   { name: "জেলা পরিচিতি", path: "/dashboard/add-district-overview" },
   { name: "উপজেলা", path: "/dashboard/add-upazila" },
   { name: "ব্যাংক", path: "/dashboard/add-bank" },

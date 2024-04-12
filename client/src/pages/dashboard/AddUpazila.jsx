@@ -81,7 +81,7 @@ const AddUpazila = () => {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
         উপজেলা
       </h2>
@@ -205,7 +205,7 @@ const AddUpazila = () => {
           )}
         </button>
       </form>
-    </DashboardLayout>
+    </>
   );
 };
 

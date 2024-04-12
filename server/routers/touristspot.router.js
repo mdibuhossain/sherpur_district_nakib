@@ -1,12 +1,12 @@
 import express from "express";
-import { touristSpotController } from "../controllers/tourist.spot.controller.js";
+import { touristspotController } from "../controllers/touristspot.controller.js";
 
 const touristSpotRouter = express.Router();
 
-touristSpotRouter.get("/", touristSpotController.getTouristSpots);
-touristSpotRouter.get("/:id", touristSpotController.getTouristSpotById);
-touristSpotRouter.post("/", touristSpotController.createTouristSpot);
-touristSpotRouter.put("/:id", touristSpotController.updateTouristSpot);
-touristSpotRouter.delete("/:id", touristSpotController.deleteTouristSpot);
+touristSpotRouter.get("/", touristspotController.getTouristspots);
+touristSpotRouter.get("/:id", touristspotController.getTouristspotById);
+touristSpotRouter.post("/", touristspotController.createTouristspot);
+touristSpotRouter.put("/:id", touristspotController.updateTouristspot);
+touristSpotRouter.delete("/:id", touristspotController.deleteTouristspot);
 
 export default touristSpotRouter;

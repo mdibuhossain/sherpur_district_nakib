@@ -96,7 +96,7 @@ const AddDistrictInfo = () => {
   };
 
   return (
-    <DashboardLayout>
+    <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
         জেলা পরিচিতি
       </h2>
@@ -106,7 +106,7 @@ const AddDistrictInfo = () => {
             <tr>
               <th className="ps-4">ID</th>
               <th className="ps-4">Title</th>
-              <th className="ps-4">Available blog</th>
+              <th className="ps-4">Available blog ID</th>
               <th className="ps-4">Actions</th>
             </tr>
           </thead>
@@ -220,7 +220,7 @@ const AddDistrictInfo = () => {
           )}
         </button>
       </form>
-    </DashboardLayout>
+    </>
   );
 };
 
