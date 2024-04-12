@@ -5,10 +5,19 @@ import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
 const AddDistrictInfo = () => {
+  const [districtInfoList, setDistrictInfoList] = React.useState([]);
   const [postLoading, setPostLoading] = React.useState(false);
   const [isPostAdded, setIsPostAdded] = React.useState(false);
   const [isPostPublished, setIsPostPublished] = React.useState(false);
   const [editorContent, setEditorContent] = React.useState("");
+
+  React.useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`)
+      .then((res) => {
+        setDistrictInfoList(res.data);
+      });
+  }, []);
 
   const handleIsPostAdded = () => {
     setIsPostAdded(!isPostAdded);
@@ -43,13 +52,14 @@ const AddDistrictInfo = () => {
           `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`,
           formData,
           {
+            withCredentials: true,
             headers: {
               "Content-Type": "multipart/form-data",
             },
           }
         )
         .then((res) => {
-          console.log(res);
+          setDistrictInfoList([...districtInfoList, res.data]);
         })
         .catch((err) => {
           console.log(err);
@@ -61,8 +71,83 @@ const AddDistrictInfo = () => {
     }
   };
 
+  const handleDeletePost = async (id) => {
+    try {
+      axios
+        .delete(
+          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info/${id}`,
+          { withCredentials: true }
+        )
+        .then((res) => {
+          console.log(res);
+          if (res.status === 204) {
+            const newDistrictInfoList = districtInfoList.filter(
+              (info) => info.id !== id
+            );
+            setDistrictInfoList(newDistrictInfoList);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
   return (
     <DashboardLayout>
+      <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
+        জেলা পরিচিতি
+      </h2>
+
+      {districtInfoList.length > 0 ? (
+        <table className="border-separate w-full border-spacing-y-2 text-sm">
+          <thead className="text-left">
+            <tr>
+              <th className="ps-4">ID</th>
+              <th className="ps-4">Title</th>
+              <th className="ps-4">Available blog</th>
+              <th className="ps-4">Actions</th>
+            </tr>
+          </thead>
+          <tbody>
+            {districtInfoList.map((info) => (
+              <tr key={info.id}>
+                <td className="td-class">{info.id}</td>
+                <td className="td-class">{info.title}</td>
+                <td className="td-class">{info.postId}</td>
+                <td className="td-class">
+                  <button onClick={() => handleDeletePost(info.id)}>
+                    <svg
+                      clipRule="evenodd"
+                      fillRule="evenodd"
+                      strokeLinejoin="round"
+                      strokeMiterlimit="2"
+                      viewBox="0 0 24 24"
+                      width="24"
+                      height="24"
+                      fill="currentColor"
+                      xmlns="http://www.w3.org/2000/svg"
+                    >
+                      <path
+                        d="m4.015 5.494h-.253c-.413 0-.747-.335-.747-.747s.334-.747.747-.747h5.253v-1c0-.535.474-1 1-1h4c.526 0 1 .465 1 1v1h5.254c.412 0 .746.335.746.747s-.334.747-.746.747h-.254v15.435c0 .591-.448 1.071-1 1.071-2.873 0-11.127 0-14 0-.552 0-1-.48-1-1.071zm14.5 0h-13v15.006h13zm-4.25 2.506c-.414 0-.75.336-.75.75v8.5c0 .414.336.75.75.75s.75-.336.75-.75v-8.5c0-.414-.336-.75-.75-.75zm-4.5 0c-.414 0-.75.336-.75.75v8.5c0 .414.336.75.75.75s.75-.336.75-.75v-8.5c0-.414-.336-.75-.75-.75zm3.75-4v-.5h-3v.5z"
+                        fillRule="nonzero"
+                      />
+                    </svg>
+                  </button>
+                </td>
+              </tr>
+            ))}
+          </tbody>
+        </table>
+      ) : (
+        <p className="bg-gray-100 ps-2 rounded-md">কোন তথ্য পাওয়া যায়নি</p>
+      )}
+
+      <h6 className="mb-4 mt-10 font-bold text-gray-900">
+        নতুন জেলা পরিচিতি যোগ করুন
+      </h6>
       <form
         onSubmit={handleCreatePost}
         className="border border-gray-300 rounded-md"
@@ -71,7 +156,7 @@ const AddDistrictInfo = () => {
           required
           name="title"
           type="text"
-          className="appearance-none rounded-none relative block w-full px-3 py-2 border  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
           placeholder="Main Title"
         />
         <div className="px-3 py-2 flex flex-col space-y-2">

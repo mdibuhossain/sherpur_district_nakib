@@ -6,6 +6,7 @@ import Login from "./pages/Login";
 import DashboardNav from "./pages/dashboard/DashboardNav";
 import Profile from "./pages/dashboard/Profile";
 import RequireAuth from "./routes/PrivateRoute";
+import AddUpazila from "./pages/dashboard/AddUpazila";
 
 function App() {
   return (
@@ -22,7 +23,9 @@ function App() {
               </RequireAuth>
             }
           >
-            <Route index element={<Profile />} />
+            <Route index element={<AddDistrictInfo />} />
+            <Route path="add-district-overview" element={<AddDistrictInfo />} />
+            <Route path="add-upazila" element={<AddUpazila />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

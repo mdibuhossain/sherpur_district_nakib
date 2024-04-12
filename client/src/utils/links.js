@@ -1,13 +1,13 @@
 export const ADMIN_NAVs = [
   { name: "Posts", path: "/dashboard/posts" },
-  { name: "Add District overview", path: "/dashboard/add-district-overview" },
-  { name: "Add Upazial", path: "/dashboard/add-upazila" },
-  { name: "Add Bank", path: "/dashboard/add-bank" },
-  { name: "Add Education place", path: "/dashboard/add-education-place" },
-  { name: "Add Restaurant", path: "/dashboard/add-restaurant" },
-  { name: "Add Hospital", path: "/dashboard/add-hospital" },
-  { name: "Add Doctor", path: "/dashboard/add-doctor" },
-  { name: "Add Tourist place", path: "/dashboard/add-tourist-place" },
+  { name: "জেলা পরিচিতি", path: "/dashboard/add-district-overview" },
+  { name: "উপজেলা", path: "/dashboard/add-upazila" },
+  { name: "ব্যাংক", path: "/dashboard/add-bank" },
+  { name: "স্কুল/কলেজ", path: "/dashboard/add-education-place" },
+  { name: "রেস্তোরাঁ", path: "/dashboard/add-restaurant" },
+  { name: "হাসপাতাল", path: "/dashboard/add-hospital" },
+  { name: "ডাক্তার", path: "/dashboard/add-doctor" },
+  { name: "দর্শনীয় স্থান", path: "/dashboard/add-tourist-place" },
   { name: "Show Users", path: "/dashboard/users" },
 ];
 

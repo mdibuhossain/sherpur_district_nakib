@@ -1,3 +1,5 @@
+import jwt from "jsonwebtoken";
+import prisma from "../db/db.config.js";
 import bcrypt from "bcryptjs/dist/bcrypt.js";
 import { encryptPass } from "../utils/utils.js";
 
@@ -21,6 +23,7 @@ export class authController {
           httpOnly: true,
           maxAge: 1000 * 60 * 60 * 24 * 7,
         });
+        // console.log(findUser);
         return res.status(200).json({ message: "Login successful" });
       }
     } catch (error) {

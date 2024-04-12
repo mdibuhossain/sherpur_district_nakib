@@ -46,7 +46,7 @@ const DashboardNav = () => {
           </div>
         </div>
         {/* Dynamic page */}
-        <div className="overflow-auto w-full p-3">
+        <div className="overflow-auto w-full p-3 h-screen">
           <Outlet />
         </div>
       </div>

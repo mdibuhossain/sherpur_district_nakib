@@ -9,6 +9,7 @@ const useAuth = () => {
 
   const redirect = useCallback(() => {
     const { state } = location;
+    console.log(state);
     state?.from ? history(state?.from?.pathname) : history("/");
   }, [history, location]);
 
@@ -17,9 +18,7 @@ const useAuth = () => {
       .post(
         `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/auth/login`,
         payload,
-        {
-          withCredentials: true,
-        }
+        { withCredentials: true }
       )
       .then((res) => {
         if (res.status === 200) {

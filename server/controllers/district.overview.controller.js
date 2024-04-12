@@ -85,7 +85,7 @@ export class districtOverviewController {
           id: parseInt(id),
         },
       });
-      return res.status(204);
+      return res.status(204).json();
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }

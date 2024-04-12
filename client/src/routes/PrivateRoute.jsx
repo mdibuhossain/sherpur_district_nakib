@@ -7,7 +7,9 @@ const RequireAuth = ({ children }) => {
   const location = useLocation();
   // console.log(location)
   // if (isLoading) return <p>Loading...</p>;
-  if (!user?.email) return <Navigate to="/login" state={{ from: location }} />;
+  console.log(user);
+  if (!user?.username)
+    return <Navigate to="/login" state={{ from: location }} />;
   return children;
 };
 
