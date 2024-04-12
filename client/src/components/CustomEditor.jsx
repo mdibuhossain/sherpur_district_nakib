@@ -4,7 +4,12 @@ import axios from "axios";
 import Editor from "suneditor-react";
 import "suneditor/dist/css/suneditor.min.css";
 
-const CustomEditor = ({ editorContent, setEditorContent, isPostAdded }) => {
+const CustomEditor = ({
+  oldData,
+  editorContent,
+  setEditorContent,
+  isPostAdded,
+}) => {
   const editor = React.useRef();
   const [selectedBannerImg, setSelectedBannerImg] = React.useState(undefined);
   const [contentImgLoading, setContentImgLoading] = React.useState(false);
@@ -71,10 +76,15 @@ const CustomEditor = ({ editorContent, setEditorContent, isPostAdded }) => {
             />
           </label>
           <div className="w-1/3">
-            {selectedBannerImg && (
+            {(selectedBannerImg || oldData?.bannerImg) && (
               <img
                 className="w-fit mt-2"
-                src={selectedBannerImg}
+                crossOrigin="anonymous"
+                src={
+                  selectedBannerImg || oldData?.bannerImg
+                    ? `${import.meta.env.VITE_APP_PUBLIC_SERVER}/images/${oldData?.bannerImg}`
+                    : ""
+                }
                 alt="thumbnail"
               />
             )}
@@ -87,12 +97,14 @@ const CustomEditor = ({ editorContent, setEditorContent, isPostAdded }) => {
           required
           name="postTitle"
           type="text"
+          defaultValue={oldData?.postTitle}
           className="appearance-none rounded-none relative block w-full px-3 py-2 border-t border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
           placeholder="Post Title"
         />
         <Editor
           name="content"
-          value={editorContent}
+          // value={editorContent}
+          defaultValue={oldData?.content}
           onChange={setEditorContent}
           getSunEditorInstance={getSunEditorInstance}
           onImageUploadBefore={onImageUploadBefore()}

@@ -1,16 +1,16 @@
 import React from "react";
 import axios from "axios";
-import DashboardLayout from "./layout";
 import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
 const AddDistrictInfo = () => {
+  const [data, setData] = React.useState([]);
   const [districtInfoList, setDistrictInfoList] = React.useState([]);
-  const [postLoading, setPostLoading] = React.useState(false);
-  const [isPostAdded, setIsPostAdded] = React.useState(false);
-  const [isPostPublished, setIsPostPublished] = React.useState(false);
+  const [blogLoading, setBlogLoading] = React.useState(false);
+  const [isBlogAdded, setIsBlogAdded] = React.useState(false);
+  const [isBlogPublished, setIsBlogPublished] = React.useState(false);
   const [editorContent, setEditorContent] = React.useState("");
-
+  console.log(districtInfoList);
   React.useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`)
@@ -19,29 +19,29 @@ const AddDistrictInfo = () => {
       });
   }, []);
 
-  const handleIsPostAdded = () => {
-    setIsPostAdded(!isPostAdded);
+  const handleIsBlogAdded = () => {
+    setIsBlogAdded(!isBlogAdded);
   };
 
-  const handleIsPostPublished = () => {
-    setIsPostPublished(!isPostPublished);
+  const handleIsBlogPublished = () => {
+    setIsBlogPublished(!isBlogPublished);
   };
 
-  const handleCreatePost = async (e) => {
+  const handleCreateBlog = async (e) => {
     e.preventDefault();
-    setPostLoading(true);
+    setBlogLoading(true);
     const payload = {
       title: e.target["title"].value,
     };
     const formData = new FormData();
     formData.append("payload", JSON.stringify(payload));
-    if (isPostAdded) {
+    if (isBlogAdded) {
       formData.append(
         "post",
         JSON.stringify({
           postTitle: e.target["postTitle"].value,
           content: e.target["content"].value,
-          isVisible: isPostPublished,
+          isVisible: isBlogPublished,
         })
       );
       formData.append("image", e.target["bannerImg"].files[0]);
@@ -67,7 +67,7 @@ const AddDistrictInfo = () => {
     } catch (error) {
       console.log(error.message);
     } finally {
-      setPostLoading(false);
+      setBlogLoading(false);
     }
   };
 
@@ -95,6 +95,12 @@ const AddDistrictInfo = () => {
     }
   };
 
+  const handleEnableEditing = async (blog) => {
+    setData(blog);
+    setIsBlogAdded(!!blog?.postId);
+    setIsBlogPublished(!!blog?.description?.isVisible);
+  };
+  console.log(data);
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
@@ -117,7 +123,7 @@ const AddDistrictInfo = () => {
                 <td className="td-class">{info.title}</td>
                 <td className="td-class">{info.postId}</td>
                 <td className="td-class flex space-x-3">
-                  <button onClick={() => handleDelete(info.id)}>
+                  <button onClick={() => handleEnableEditing(info)}>
                     <svg
                       clipRule="evenodd"
                       fillRule="evenodd"
@@ -166,13 +172,14 @@ const AddDistrictInfo = () => {
         নতুন জেলা পরিচিতি যোগ করুন
       </h6>
       <form
-        onSubmit={handleCreatePost}
+        onSubmit={handleCreateBlog}
         className="border border-gray-300 rounded-md"
       >
         <input
           required
           name="title"
           type="text"
+          defaultValue={data.title}
           className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
           placeholder="Main Title"
         />
@@ -183,21 +190,23 @@ const AddDistrictInfo = () => {
             </span>
             <input
               type="checkbox"
-              value={isPostAdded}
-              onChange={handleIsPostAdded}
+              value={isBlogAdded}
+              checked={isBlogAdded}
+              onChange={handleIsBlogAdded}
               className="sr-only peer"
             />
             <div className="relative w-11 h-6 bg-zinc-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
           </label>
-          {isPostAdded && (
+          {isBlogAdded && (
             <label className="inline-flex items-center cursor-pointer">
               <span className="me-3 text-sm text-gray-900">
                 Will you publish the blog?
               </span>
               <input
                 type="checkbox"
-                value={isPostPublished}
-                onChange={handleIsPostPublished}
+                value={isBlogPublished}
+                checked={isBlogPublished}
+                onChange={handleIsBlogPublished}
                 className="sr-only peer"
               />
               <div className="relative w-11 h-6 bg-zinc-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
@@ -205,15 +214,16 @@ const AddDistrictInfo = () => {
           )}
         </div>
         <CustomEditor
+          oldData={data?.description}
+          isPostAdded={isBlogAdded}
           editorContent={editorContent}
           setEditorContent={setEditorContent}
-          isPostAdded={isPostAdded}
         />
         <button
           type="submit"
           className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-b-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          {postLoading ? (
+          {blogLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           ) : (
             "Create"
