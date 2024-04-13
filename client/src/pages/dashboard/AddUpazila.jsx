@@ -5,9 +5,11 @@ import CustomEditor from "../../components/CustomEditor";
 
 const AddUpazila = () => {
   const [upazilaList, setUpazilaList] = React.useState([]);
-  const [postLoading, setPostLoading] = React.useState(false);
-  const [isPostAdded, setIsPostAdded] = React.useState(false);
-  const [isPostPublished, setIsPostPublished] = React.useState(false);
+  const [data, setData] = React.useState(null);
+  const [action, setAction] = React.useState("create");
+  const [blogLoading, setBlogLoading] = React.useState(false);
+  const [isBlogAdded, setIsBlogAdded] = React.useState(false);
+  const [isBlogPublished, setIsBlogPublished] = React.useState(false);
   const [editorContent, setEditorContent] = React.useState("");
 
   React.useEffect(() => {
@@ -18,47 +20,57 @@ const AddUpazila = () => {
       });
   }, []);
 
-  const handleIsPostAdded = () => {
-    setIsPostAdded(!isPostAdded);
+  const handleIsBlogAdded = () => {
+    setIsBlogAdded(!isBlogAdded);
   };
 
-  const handleIsPostPublished = () => {
-    setIsPostPublished(!isPostPublished);
+  const handleIsBlogPublished = () => {
+    setIsBlogPublished(!isBlogPublished);
   };
 
-  const handleCreatePost = async (e) => {
-    e.preventDefault();
-    setPostLoading(true);
+  const blogHandler = (target, method, _id) => {
+    setBlogLoading(true);
     const payload = {
-      title: e.target["title"].value,
+      name: target["name"].value,
     };
     const formData = new FormData();
     formData.append("payload", JSON.stringify(payload));
-    if (isPostAdded) {
+    if (isBlogAdded) {
       formData.append(
         "post",
         JSON.stringify({
-          postTitle: e.target["postTitle"].value,
-          content: e.target["content"].value,
-          isVisible: isPostPublished,
+          bannerImg: data?.description?.bannerImg || "",
+          postTitle: target["postTitle"].value,
+          content: target["content"].value,
+          isVisible: isBlogPublished,
+          id: data?.postId || null,
         })
       );
-      formData.append("image", e.target["bannerImg"].files[0]);
+      formData.append("image", target["bannerImg"].files[0]);
     }
     try {
-      axios
-        .post(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`,
-          formData,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
+      axios[method](
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila${_id ? `/${_id}` : ""}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
         .then((res) => {
-          setUpazilaList([...upazilaList, res.data]);
+          if (_id) {
+            setUpazilaList((pre) => {
+              const newDistrictInfoList = [...pre];
+              newDistrictInfoList[
+                upazilaList.indexOf((info) => info.id === _id)
+              ] = res?.data;
+              return newDistrictInfoList;
+            });
+          } else {
+            setUpazilaList([...upazilaList, res.data]);
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -66,18 +78,47 @@ const AddUpazila = () => {
     } catch (error) {
       console.log(error.message);
     } finally {
-      setPostLoading(false);
+      setBlogLoading(false);
     }
   };
 
-  const handleDelete = (id) => {
-    axios
-      .delete(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila/${id}`)
-      .then((res) => {
-        if (res.status === 204) {
-          setUpazilaList(upazilaList.filter((info) => info.id !== id));
-        }
-      });
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (action === "create") {
+      blogHandler(e.target, "post");
+    } else if (action === "update") {
+      blogHandler(e.target, "put", data?.id);
+    }
+    e.target.reset();
+  };
+
+  const handleDelete = async (id) => {
+    try {
+      axios
+        .delete(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila/${id}`, {
+          withCredentials: true,
+        })
+        .then((res) => {
+          if (res.status === 204) {
+            const newDistrictInfoList = upazilaList.filter(
+              (info) => info.id !== id
+            );
+            setUpazilaList(newDistrictInfoList);
+          }
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  const handleEnableEditing = async (blog) => {
+    setData(blog);
+    setEditorContent(blog?.description?.content);
+    setIsBlogAdded(!!blog?.postId);
+    setIsBlogPublished(!!blog?.description?.isVisible);
   };
 
   return (
@@ -91,7 +132,7 @@ const AddUpazila = () => {
             <tr>
               <th className="ps-4">ID</th>
               <th className="ps-4">Title</th>
-              <th className="ps-4">Available blog</th>
+              <th className="ps-4">Available blog ID</th>
               <th className="ps-4">Actions</th>
             </tr>
           </thead>
@@ -99,10 +140,10 @@ const AddUpazila = () => {
             {upazilaList.map((upazila) => (
               <tr key={upazila.id}>
                 <td className="td-class">{upazila.id}</td>
-                <td className="td-class">{upazila.title}</td>
+                <td className="td-class">{upazila.name}</td>
                 <td className="td-class">{upazila.postId}</td>
                 <td className="td-class flex space-x-3">
-                  <button onClick={() => handleDelete(upazila.id)}>
+                  <button onClick={() => handleEnableEditing(upazila)}>
                     <svg
                       clipRule="evenodd"
                       fillRule="evenodd"
@@ -148,41 +189,44 @@ const AddUpazila = () => {
       )}
 
       <h6 className="mb-4 mt-10 font-bold text-gray-900">
-        নতুন জেলা পরিচিতি যোগ করুন
+        নতুন উপজেলা যোগ করুন
       </h6>
       <form
-        onSubmit={handleCreatePost}
-        className="border border-gray-300 rounded-md"
+        onSubmit={handleSubmit}
+        className="border border-gray-300 rounded-md overflow-hidden"
       >
         <input
           required
-          name="title"
+          name="name"
           type="text"
+          defaultValue={data?.name}
           className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="Main Title"
+          placeholder="উপজেলার নাম"
         />
         <div className="px-3 py-2 flex flex-col space-y-2">
           <label className="inline-flex items-center cursor-pointer">
             <span className="me-3 text-sm text-gray-900">
-              Will you add blog?
+              ব্লগ যুক্ত করতে চান?
             </span>
             <input
               type="checkbox"
-              value={isPostAdded}
-              onChange={handleIsPostAdded}
+              value={isBlogAdded}
+              checked={isBlogAdded}
+              onChange={handleIsBlogAdded}
               className="sr-only peer"
             />
             <div className="relative w-11 h-6 bg-zinc-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
           </label>
-          {isPostAdded && (
+          {isBlogAdded && (
             <label className="inline-flex items-center cursor-pointer">
               <span className="me-3 text-sm text-gray-900">
-                Will you publish the blog?
+                ব্লগ প্রকাশ করতে চান?
               </span>
               <input
                 type="checkbox"
-                value={isPostPublished}
-                onChange={handleIsPostPublished}
+                value={isBlogPublished}
+                checked={isBlogPublished}
+                onChange={handleIsBlogPublished}
                 className="sr-only peer"
               />
               <div className="relative w-11 h-6 bg-zinc-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
@@ -190,20 +234,35 @@ const AddUpazila = () => {
           )}
         </div>
         <CustomEditor
+          oldData={data?.description}
+          isPostAdded={isBlogAdded}
           editorContent={editorContent}
           setEditorContent={setEditorContent}
-          isPostAdded={isPostAdded}
         />
         <button
           type="submit"
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-b-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={() => setAction("create")}
+          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
-          {postLoading ? (
+          {blogLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           ) : (
-            "Create"
+            "Create new"
           )}
         </button>
+        {data && (
+          <button
+            type="submit"
+            onClick={() => setAction("update")}
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-b-md text-white bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400"
+          >
+            {blogLoading ? (
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            ) : (
+              "Update existing"
+            )}
+          </button>
+        )}
       </form>
     </>
   );

@@ -100,7 +100,7 @@ const CustomEditor = ({
           type="text"
           defaultValue={oldData?.postTitle}
           className="appearance-none rounded-none relative block w-full px-3 py-2 border-t border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="Post Title"
+          placeholder="ব্লগ টাইটেল"
         />
         <Editor
           name="content"
@@ -109,7 +109,7 @@ const CustomEditor = ({
           onChange={setEditorContent}
           getSunEditorInstance={getSunEditorInstance}
           onImageUploadBefore={onImageUploadBefore()}
-          placeholder="Write"
+          placeholder="লিখুন আপনার ব্লগ পোস্টটি এখানে..."
           setOptions={{
             buttonList: [
               [

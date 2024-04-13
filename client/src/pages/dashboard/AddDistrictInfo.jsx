@@ -4,14 +4,14 @@ import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
 const AddDistrictInfo = () => {
+  const [districtInfoList, setDistrictInfoList] = React.useState([]);
   const [data, setData] = React.useState(null);
   const [action, setAction] = React.useState("create");
-  const [districtInfoList, setDistrictInfoList] = React.useState([]);
   const [blogLoading, setBlogLoading] = React.useState(false);
   const [isBlogAdded, setIsBlogAdded] = React.useState(false);
   const [isBlogPublished, setIsBlogPublished] = React.useState(false);
   const [editorContent, setEditorContent] = React.useState("");
-  console.log(districtInfoList);
+
   React.useEffect(() => {
     axios
       .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`)
@@ -48,7 +48,6 @@ const AddDistrictInfo = () => {
       );
       formData.append("image", target["bannerImg"].files[0]);
     }
-    console.log(formData.get("post"));
     try {
       axios[method](
         `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info${_id ? `/${_id}` : ""}`,
@@ -101,7 +100,6 @@ const AddDistrictInfo = () => {
           { withCredentials: true }
         )
         .then((res) => {
-          console.log(res);
           if (res.status === 204) {
             const newDistrictInfoList = districtInfoList.filter(
               (info) => info.id !== id
@@ -204,12 +202,12 @@ const AddDistrictInfo = () => {
           type="text"
           defaultValue={data?.title}
           className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="Main Title"
+          placeholder="মূল টাইটেল"
         />
         <div className="px-3 py-2 flex flex-col space-y-2">
           <label className="inline-flex items-center cursor-pointer">
             <span className="me-3 text-sm text-gray-900">
-              Will you add blog?
+              ব্লগ যুক্ত করতে চান?
             </span>
             <input
               type="checkbox"
@@ -223,7 +221,7 @@ const AddDistrictInfo = () => {
           {isBlogAdded && (
             <label className="inline-flex items-center cursor-pointer">
               <span className="me-3 text-sm text-gray-900">
-                Will you publish the blog?
+                ব্লগ প্রকাশ করতে চান?
               </span>
               <input
                 type="checkbox"

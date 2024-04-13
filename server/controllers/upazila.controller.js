@@ -4,7 +4,11 @@ import { createPost, updatePost } from "../utils/utils.js";
 export class upazilaController {
   static getUpazilas = async (req, res) => {
     try {
-      const result = await prisma.upazila.findMany();
+      const result = await prisma.upazila.findMany({
+        include: {
+          description: true,
+        },
+      });
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ errors: error.message });
@@ -18,6 +22,9 @@ export class upazilaController {
         where: {
           id: parseInt(id),
         },
+        include: {
+          description: true,
+        },
       });
       return res.status(200).json(result);
     } catch (error) {
@@ -28,11 +35,15 @@ export class upazilaController {
   static createUpazila = async (req, res) => {
     try {
       let { payload, post } = req.body;
+      console.log(post);
+      console.log(payload);
       payload = JSON.parse(payload);
       if (post) {
+        post = JSON.parse(post);
+        delete post.id;
         payload.postId = await createPost(
-          JSON.parse(post),
-          req.file.filename,
+          post,
+          req?.file?.filename,
           req.user.id
         );
       }
@@ -54,10 +65,16 @@ export class upazilaController {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
       if (post) {
-        payload.postId = await updatePost(
-          JSON.parse(post),
-          req?.file?.filename
-        );
+        post = JSON.parse(post);
+        if (post?.id) {
+          await updatePost(post, req?.file?.filename);
+        } else {
+          payload.postId = await createPost(
+            post,
+            req?.file?.filename,
+            req.user.id
+          );
+        }
       }
       const result = await prisma.upazila.update({
         where: {
@@ -75,14 +92,26 @@ export class upazilaController {
   };
 
   static deleteUpazila = async (req, res) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
+      const findData = await prisma.upazila.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
       await prisma.upazila.delete({
         where: {
           id: parseInt(id),
         },
       });
-      return res.status(204);
+      if (findData?.postId) {
+        await prisma.post.delete({
+          where: {
+            id: findData.postId,
+          },
+        });
+      }
+      return res.status(204).json();
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }

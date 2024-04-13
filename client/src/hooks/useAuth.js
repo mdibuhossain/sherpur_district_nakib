@@ -9,7 +9,6 @@ const useAuth = () => {
 
   const redirect = useCallback(() => {
     const { state } = location;
-    console.log(state);
     state?.from ? history(state?.from?.pathname) : history("/");
   }, [history, location]);
 

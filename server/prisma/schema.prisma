@@ -56,11 +56,10 @@ model Upazila {
   name            String
   geoLocation     String?
   stationAddress  String?
-  bannerImg       String?
   createdAt       DateTime         @default(now())
   updatedAt       DateTime         @updatedAt
-  description     Post             @relation(fields: [postId], references: [id])
-  postId          Int
+  description     Post?            @relation(fields: [postId], references: [id])
+  postId          Int?
   banks           Bank[]
   unions          Union[]
   hospitals       Hospital[]
@@ -72,7 +71,6 @@ model Upazila {
 model Union {
   id        Int      @id @default(autoincrement())
   name      String
-  bannerImg String?
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
   upazila   Upazila  @relation(fields: [upazilaId], references: [id])
@@ -84,13 +82,12 @@ model Bank {
   name        String
   address     String
   contact     String?
-  bannerImg   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  description Post     @relation(fields: [postId], references: [id])
+  description Post?    @relation(fields: [postId], references: [id])
   upazila     Upazila  @relation(fields: [upazilaId], references: [id])
   upazilaId   Int
-  postId      Int
+  postId      Int?
 }
 
 model Restaurant {
@@ -98,13 +95,12 @@ model Restaurant {
   name        String
   address     String
   contact     String?
-  bannerImg   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  description Post     @relation(fields: [postId], references: [id])
+  description Post?    @relation(fields: [postId], references: [id])
   upazila     Upazila  @relation(fields: [upazilaId], references: [id])
   upazilaId   Int
-  postId      Int
+  postId      Int?
 }
 
 model EducationPlace {
@@ -112,13 +108,12 @@ model EducationPlace {
   name        String
   address     String
   contact     String?
-  bannerImg   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  description Post     @relation(fields: [postId], references: [id])
+  description Post?    @relation(fields: [postId], references: [id])
   upazila     Upazila  @relation(fields: [upazilaId], references: [id])
   upazilaId   Int
-  postId      Int
+  postId      Int?
 }
 
 model Hospital {
@@ -127,14 +122,13 @@ model Hospital {
   name        String
   address     String
   contact     String?
-  bannerImg   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  description Post     @relation(fields: [postId], references: [id])
+  description Post?    @relation(fields: [postId], references: [id])
   upazila     Upazila  @relation(fields: [upazilaId], references: [id])
   upazilaId   Int
   doctors     Doctor[]
-  postId      Int
+  postId      Int?
 }
 
 model Doctor {
@@ -153,11 +147,10 @@ model TouristSpot {
   name        String
   address     String
   contact     String?
-  bannerImg   String?
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
-  description Post     @relation(fields: [postId], references: [id])
+  description Post?    @relation(fields: [postId], references: [id])
   upazila     Upazila  @relation(fields: [upazilaId], references: [id])
   upazilaId   Int
-  postId      Int
+  postId      Int?
 }

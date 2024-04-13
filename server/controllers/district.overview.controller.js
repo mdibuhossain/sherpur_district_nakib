@@ -34,8 +34,8 @@ export class districtOverviewController {
     try {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
-      post = JSON.parse(post);
       if (post) {
+        post = JSON.parse(post);
         delete post.id;
         payload.postId = await createPost(
           post,
@@ -58,9 +58,9 @@ export class districtOverviewController {
     try {
       const { id } = req.params;
       let { payload, post } = req.body;
-      post = await JSON.parse(post);
       payload = await JSON.parse(payload);
       if (post) {
+        post = await JSON.parse(post);
         if (post?.id) {
           await updatePost(post, req?.file?.filename);
         } else {

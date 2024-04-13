@@ -5,7 +5,7 @@ import DashboardLayout from "./layout";
 const AllBlogs = () => {
   const [blogs, setBlogs] = React.useState([]);
   const [loading, setLoading] = React.useState(false);
-  console.log(blogs);
+  
   React.useEffect(() => {
     setLoading(true);
     fetch(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/blog`)
