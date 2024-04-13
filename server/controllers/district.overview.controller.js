@@ -34,10 +34,12 @@ export class districtOverviewController {
     try {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
+      post = JSON.parse(post);
       if (post) {
+        delete post.id;
         payload.postId = await createPost(
-          JSON.parse(post),
-          req.file.filename,
+          post,
+          req?.file?.filename,
           req.user.id
         );
       }
@@ -56,12 +58,18 @@ export class districtOverviewController {
     try {
       const { id } = req.params;
       let { payload, post } = req.body;
-      payload = JSON.parse(payload);
+      post = await JSON.parse(post);
+      payload = await JSON.parse(payload);
       if (post) {
-        payload.postId = await updatePost(
-          JSON.parse(post),
-          req?.file?.filename
-        );
+        if (post?.id) {
+          await updatePost(post, req?.file?.filename);
+        } else {
+          payload.postId = await createPost(
+            post,
+            req?.file?.filename,
+            req.user.id
+          );
+        }
       }
       const result = await prisma.districtInfo.update({
         where: {
@@ -80,11 +88,23 @@ export class districtOverviewController {
   static async deleteDistrictInfo(req, res) {
     const { id } = req.params;
     try {
+      const findData = await prisma.districtInfo.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
       await prisma.districtInfo.delete({
         where: {
           id: parseInt(id),
         },
       });
+      if (findData?.postId) {
+        await prisma.post.delete({
+          where: {
+            id: findData.postId,
+          },
+        });
+      }
       return res.status(204).json();
     } catch (error) {
       return res.status(500).json({ errors: error.message });

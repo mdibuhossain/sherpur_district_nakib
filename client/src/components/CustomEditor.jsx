@@ -20,6 +20,7 @@ const CustomEditor = ({
   const handleBannerImgPreview = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedBannerImg(URL.createObjectURL(e.target.files[0]));
+      oldData.bannerImg = null;
     }
   };
 
@@ -81,9 +82,9 @@ const CustomEditor = ({
                 className="w-fit mt-2"
                 crossOrigin="anonymous"
                 src={
-                  selectedBannerImg || oldData?.bannerImg
+                  (oldData?.bannerImg
                     ? `${import.meta.env.VITE_APP_PUBLIC_SERVER}/images/${oldData?.bannerImg}`
-                    : ""
+                    : "") || selectedBannerImg
                 }
                 alt="thumbnail"
               />

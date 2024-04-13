@@ -34,9 +34,9 @@ const DashboardNav = () => {
               শেরপুর
             </div>
             <div className="flex flex-col gap-y-2 font-light text-white overflow-auto">
+              {NavListView(COMMON_NAVs)}
               {user?.role === "ADMIN" ? NavListView(ADMIN_NAVs) : null}
               {user?.role === "USER" ? NavListView(USER_NAVs) : null}
-              {NavListView(COMMON_NAVs)}
             </div>
             <button
               onClick={logout}

@@ -4,7 +4,8 @@ import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
 const AddDistrictInfo = () => {
-  const [data, setData] = React.useState([]);
+  const [data, setData] = React.useState(null);
+  const [action, setAction] = React.useState("create");
   const [districtInfoList, setDistrictInfoList] = React.useState([]);
   const [blogLoading, setBlogLoading] = React.useState(false);
   const [isBlogAdded, setIsBlogAdded] = React.useState(false);
@@ -27,11 +28,10 @@ const AddDistrictInfo = () => {
     setIsBlogPublished(!isBlogPublished);
   };
 
-  const handleCreateBlog = async (e) => {
-    e.preventDefault();
+  const blogHandler = (target, method, _id) => {
     setBlogLoading(true);
     const payload = {
-      title: e.target["title"].value,
+      title: target["title"].value,
     };
     const formData = new FormData();
     formData.append("payload", JSON.stringify(payload));
@@ -39,27 +39,39 @@ const AddDistrictInfo = () => {
       formData.append(
         "post",
         JSON.stringify({
-          postTitle: e.target["postTitle"].value,
-          content: e.target["content"].value,
+          bannerImg: data?.description?.bannerImg || "",
+          postTitle: target["postTitle"].value,
+          content: target["content"].value,
           isVisible: isBlogPublished,
+          id: data?.postId || null,
         })
       );
-      formData.append("image", e.target["bannerImg"].files[0]);
+      formData.append("image", target["bannerImg"].files[0]);
     }
+    console.log(formData.get("post"));
     try {
-      axios
-        .post(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`,
-          formData,
-          {
-            withCredentials: true,
-            headers: {
-              "Content-Type": "multipart/form-data",
-            },
-          }
-        )
+      axios[method](
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info${_id ? `/${_id}` : ""}`,
+        formData,
+        {
+          withCredentials: true,
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        }
+      )
         .then((res) => {
-          setDistrictInfoList([...districtInfoList, res.data]);
+          if (_id) {
+            setDistrictInfoList((pre) => {
+              const newDistrictInfoList = [...pre];
+              newDistrictInfoList[
+                districtInfoList.indexOf((info) => info.id === _id)
+              ] = res?.data;
+              return newDistrictInfoList;
+            });
+          } else {
+            setDistrictInfoList([...districtInfoList, res.data]);
+          }
         })
         .catch((err) => {
           console.log(err);
@@ -69,6 +81,16 @@ const AddDistrictInfo = () => {
     } finally {
       setBlogLoading(false);
     }
+  };
+
+  const handleSubmit = (e) => {
+    e.preventDefault();
+    if (action === "create") {
+      blogHandler(e.target, "post");
+    } else if (action === "update") {
+      blogHandler(e.target, "put", data?.id);
+    }
+    e.target.reset();
   };
 
   const handleDelete = async (id) => {
@@ -97,10 +119,11 @@ const AddDistrictInfo = () => {
 
   const handleEnableEditing = async (blog) => {
     setData(blog);
+    setEditorContent(blog?.description?.content);
     setIsBlogAdded(!!blog?.postId);
     setIsBlogPublished(!!blog?.description?.isVisible);
   };
-  console.log(data);
+
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
@@ -172,14 +195,14 @@ const AddDistrictInfo = () => {
         নতুন জেলা পরিচিতি যোগ করুন
       </h6>
       <form
-        onSubmit={handleCreateBlog}
-        className="border border-gray-300 rounded-md"
+        onSubmit={handleSubmit}
+        className="border border-gray-300 rounded-md overflow-hidden"
       >
         <input
           required
           name="title"
           type="text"
-          defaultValue={data.title}
+          defaultValue={data?.title}
           className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
           placeholder="Main Title"
         />
@@ -221,14 +244,28 @@ const AddDistrictInfo = () => {
         />
         <button
           type="submit"
-          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-b-md text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
+          onClick={() => setAction("create")}
+          className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500"
         >
           {blogLoading ? (
             <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
           ) : (
-            "Create"
+            "Create new"
           )}
         </button>
+        {data && (
+          <button
+            type="submit"
+            onClick={() => setAction("update")}
+            className="group relative w-full flex justify-center py-2 px-4 border border-transparent text-sm font-medium rounded-b-md text-white bg-sky-500 hover:bg-sky-600 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-sky-400"
+          >
+            {blogLoading ? (
+              <div className="animate-spin rounded-full h-5 w-5 border-b-2 border-white"></div>
+            ) : (
+              "Update existing"
+            )}
+          </button>
+        )}
       </form>
     </>
   );
