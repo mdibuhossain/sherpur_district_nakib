@@ -16,7 +16,7 @@ const CustomEditor = ({
   const getSunEditorInstance = (sunEditor) => {
     editor.current = sunEditor;
   };
-
+  
   const handleBannerImgPreview = (e) => {
     if (e.target.files && e.target.files[0]) {
       setSelectedBannerImg(URL.createObjectURL(e.target.files[0]));

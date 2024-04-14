@@ -1,9 +1,12 @@
 import React from "react";
 import axios from "axios";
+import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
-const AddUpazila = () => {
-  const [upazilaList, setUpazilaList] = React.useState([]);
+const AddBank = () => {
+  const [bankList, setBankList] = React.useState([]);
+  const [upazilaList, setUpazialList] = React.useState([]);
+  const [upazilaId, setUpazilaId] = React.useState(-1);
   const [data, setData] = React.useState(null);
   const [action, setAction] = React.useState("create");
   const [blogLoading, setBlogLoading] = React.useState(false);
@@ -13,9 +16,18 @@ const AddUpazila = () => {
 
   React.useEffect(() => {
     axios
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/bank`)
+      .then((res) => {
+        setBankList(res.data);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    axios
       .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila`)
       .then((res) => {
-        setUpazilaList(res.data);
+        console.log(res.data);
+        setUpazialList(res.data);
       });
   }, []);
 
@@ -31,6 +43,9 @@ const AddUpazila = () => {
     setBlogLoading(true);
     const payload = {
       name: target["name"].value,
+      address: target["address"].value,
+      contact: target["contact"].value,
+      upazilaId: parseInt(target["upazilaId"].value),
     };
     const formData = new FormData();
     formData.append("payload", JSON.stringify(payload));
@@ -49,7 +64,7 @@ const AddUpazila = () => {
     }
     try {
       axios[method](
-        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila${_id ? `/${_id}` : ""}`,
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/bank${_id ? `/${_id}` : ""}`,
         formData,
         {
           withCredentials: true,
@@ -60,15 +75,14 @@ const AddUpazila = () => {
       )
         .then((res) => {
           if (_id) {
-            setUpazilaList((pre) => {
-              const newDistrictInfoList = [...pre];
-              newDistrictInfoList[
-                upazilaList.indexOf((info) => info.id === _id)
-              ] = res?.data;
-              return newDistrictInfoList;
+            setBankList((pre) => {
+              const newBankList = [...pre];
+              newBankList[bankList.indexOf((info) => info.id === _id)] =
+                res?.data;
+              return newBankList;
             });
           } else {
-            setUpazilaList([...upazilaList, res.data]);
+            setBankList([...bankList, res.data]);
           }
         })
         .catch((err) => {
@@ -94,15 +108,13 @@ const AddUpazila = () => {
   const handleDelete = async (id) => {
     try {
       axios
-        .delete(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila/${id}`, {
+        .delete(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/bank/${id}`, {
           withCredentials: true,
         })
         .then((res) => {
           if (res.status === 204) {
-            const newDistrictInfoList = upazilaList.filter(
-              (info) => info.id !== id
-            );
-            setUpazilaList(newDistrictInfoList);
+            const newBankList = bankList.filter((info) => info.id !== id);
+            setBankList(newBankList);
           }
         })
         .catch((err) => {
@@ -115,6 +127,7 @@ const AddUpazila = () => {
 
   const handleEnableEditing = async (blog) => {
     setData(blog);
+    setUpazilaId(blog?.upazilaId);
     setEditorContent(blog?.description?.content);
     setIsBlogAdded(!!blog?.postId);
     setIsBlogPublished(!!blog?.description?.isVisible);
@@ -123,9 +136,9 @@ const AddUpazila = () => {
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-        উপজেলা
+        ব্যাংক তালিকা
       </h2>
-      {upazilaList.length > 0 ? (
+      {bankList.length > 0 ? (
         <table className="border-separate w-full border-spacing-y-2 text-sm">
           <thead className="text-left">
             <tr>
@@ -136,7 +149,7 @@ const AddUpazila = () => {
             </tr>
           </thead>
           <tbody>
-            {upazilaList.map((upazila) => (
+            {bankList.map((upazila) => (
               <tr key={upazila.id}>
                 <td className="td-class">{upazila.id}</td>
                 <td className="td-class">{upazila.name}</td>
@@ -188,7 +201,7 @@ const AddUpazila = () => {
       )}
 
       <h6 className="mb-4 mt-10 font-bold text-gray-900">
-        নতুন উপজেলা যোগ করুন
+        নতুন ব্যাংক যোগ করুন
       </h6>
       <form
         onSubmit={handleSubmit}
@@ -199,9 +212,39 @@ const AddUpazila = () => {
           name="name"
           type="text"
           defaultValue={data?.name}
-          className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="উপজেলার নাম"
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="ব্যাংকের নাম"
         />
+        <input
+          required
+          name="address"
+          type="text"
+          defaultValue={data?.name}
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="ঠিকানা"
+        />
+        <input
+          required
+          name="contact"
+          type="text"
+          defaultValue={data?.name}
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="যোগাযোগ"
+        />
+        <select
+          id="upazilaId"
+          name="upazilaId"
+          value={upazilaId}
+          onChange={(e) => setUpazilaId(e.target.value)}
+          className="w-full appearance-none relative block px-3 py-2 border-b border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+        >
+          <option value={-1}>উপজেলা নির্বাচন করুন</option>
+          {upazilaList.map((upzila) => (
+            <option key={upzila.id} value={upzila.id}>
+              {upzila.name}
+            </option>
+          ))}
+        </select>
         <div className="px-3 py-2 flex flex-col space-y-2">
           <label className="inline-flex items-center cursor-pointer">
             <span className="me-3 text-sm text-gray-900">
@@ -267,4 +310,4 @@ const AddUpazila = () => {
   );
 };
 
-export default AddUpazila;
+export default AddBank;

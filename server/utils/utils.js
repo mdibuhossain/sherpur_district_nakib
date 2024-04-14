@@ -8,6 +8,7 @@ export function encryptPass(password) {
 
 export async function createPost(payload, filename, authorId) {
   try {
+    console.log(authorId);
     if (filename) payload.bannerImg = filename;
     const result = await prisma.post.create({
       data: { ...payload, authorId },
@@ -20,7 +21,7 @@ export async function createPost(payload, filename, authorId) {
 
 export async function updatePost(payload, filename) {
   try {
-    console.log(payload)
+    console.log(payload);
     if (filename) payload.bannerImg = filename;
     const result = await prisma.post.update({
       where: { id: payload.id },

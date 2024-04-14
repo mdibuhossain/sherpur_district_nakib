@@ -8,6 +8,7 @@ import Profile from "./pages/dashboard/Profile";
 import RequireAuth from "./routes/PrivateRoute";
 import AddUpazila from "./pages/dashboard/AddUpazila";
 import AllBlogs from "./pages/dashboard/AllBlogs";
+import AddBank from "./pages/dashboard/AddBank";
 
 function App() {
   return (
@@ -28,6 +29,7 @@ function App() {
             <Route path="add-district-overview" element={<AddDistrictInfo />} />
             <Route path="blogs" element={<AllBlogs />} />
             <Route path="add-upazila" element={<AddUpazila />} />
+            <Route path="add-bank" element={<AddBank />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>
