@@ -16,4 +16,7 @@ export const USER_NAVs = [
   { name: "Vehicle records", path: "/sts-vehicle-records" },
 ];
 
-export const COMMON_NAVs = [{ name: "Profile", path: "/dashboard/profile" }];
+export const COMMON_NAVs = [
+  { name: "হোম", path: "/" },
+  { name: "প্রোফাইল", path: "/dashboard" },
+];

@@ -30,7 +30,7 @@ function App() {
               </RequireAuth>
             }
           >
-            <Route index element={<AddDistrictInfo />} />
+            <Route index element={<Profile />} />
             <Route path="add-district-overview" element={<AddDistrictInfo />} />
             <Route path="blogs" element={<AllBlogs />} />
             <Route path="add-upazila" element={<AddUpazila />} />
