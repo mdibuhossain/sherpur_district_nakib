@@ -3,8 +3,8 @@ import axios from "axios";
 import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
-const AddEducationPlace = () => {
-  const [educationPlaceList, setEducationPlaceList] = React.useState([]);
+const AddRestaurant = () => {
+  const [restaurantList, setRestaurantList] = React.useState([]);
   const [upazilaList, setUpazialList] = React.useState([]);
   const [upazilaId, setUpazilaId] = React.useState(-1);
   const [data, setData] = React.useState(null);
@@ -16,9 +16,9 @@ const AddEducationPlace = () => {
 
   React.useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place`)
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/restaurant`)
       .then((res) => {
-        setEducationPlaceList(res.data);
+        setRestaurantList(res.data);
       });
   }, []);
 
@@ -64,7 +64,7 @@ const AddEducationPlace = () => {
     }
     try {
       axios[method](
-        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place${_id ? `/${_id}` : ""}`,
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/restaurant${_id ? `/${_id}` : ""}`,
         formData,
         {
           withCredentials: true,
@@ -76,16 +76,16 @@ const AddEducationPlace = () => {
         .then((res) => {
           if (res.status === 201) {
             if (_id) {
-              setEducationPlaceList((pre) => {
-                const newEducationPlaceList = [...pre];
-                newEducationPlaceList[
-                  educationPlaceList.indexOf((info) => info.id === _id)
+              setRestaurantList((pre) => {
+                const newRestaurantList = [...pre];
+                newRestaurantList[
+                  restaurantList.indexOf((info) => info.id === _id)
                 ] = res?.data;
-                return newEducationPlaceList;
+                return newRestaurantList;
               });
               alert("ব্যাংক তথ্য আপডেট হয়েছে");
             } else {
-              setEducationPlaceList([...educationPlaceList, res.data]);
+              setRestaurantList([...restaurantList, res.data]);
               alert("ব্যাংক তথ্য যুক্ত হয়েছে");
             }
           } else {
@@ -116,17 +116,17 @@ const AddEducationPlace = () => {
     try {
       axios
         .delete(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place/${id}`,
+          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/restaurant/${id}`,
           {
             withCredentials: true,
           }
         )
         .then((res) => {
           if (res.status === 204) {
-            const newEducationPlaceList = educationPlaceList.filter(
+            const newRestaurantList = restaurantList.filter(
               (info) => info.id !== id
             );
-            setEducationPlaceList(newEducationPlaceList);
+            setRestaurantList(newRestaurantList);
           }
         })
         .catch((err) => {
@@ -148,9 +148,9 @@ const AddEducationPlace = () => {
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-        শিক্ষা প্রতিষ্ঠান তথ্য
+        রেস্তোরাঁ তালিকা
       </h2>
-      {educationPlaceList.length > 0 ? (
+      {restaurantList.length > 0 ? (
         <table className="border-separate w-full border-spacing-y-2 text-sm">
           <thead className="text-left">
             <tr>
@@ -161,7 +161,7 @@ const AddEducationPlace = () => {
             </tr>
           </thead>
           <tbody>
-            {educationPlaceList.map((upazila) => (
+            {restaurantList.map((upazila) => (
               <tr key={upazila.id}>
                 <td className="td-class">{upazila.id}</td>
                 <td className="td-class">{upazila.name}</td>
@@ -213,7 +213,7 @@ const AddEducationPlace = () => {
       )}
 
       <h6 className="mb-4 mt-10 font-bold text-gray-900">
-        নতুন শিক্ষা প্রতিষ্ঠান যুক্ত করুন
+        নতুন রেস্তোরাঁ যুক্ত করুন
       </h6>
       <form
         onSubmit={handleSubmit}
@@ -225,7 +225,7 @@ const AddEducationPlace = () => {
           type="text"
           defaultValue={data?.name}
           className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="শিক্ষা প্রতিষ্ঠানের নাম"
+          placeholder="রেস্তোরাঁর নাম"
         />
         <input
           required
@@ -322,4 +322,4 @@ const AddEducationPlace = () => {
   );
 };
 
-export default AddEducationPlace;
+export default AddRestaurant;

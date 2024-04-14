@@ -132,14 +132,14 @@ model Hospital {
 }
 
 model Doctor {
-  id          Int      @id @default(autoincrement())
+  id          Int       @id @default(autoincrement())
   name        String
   designation String
   contact     String?
-  createdAt   DateTime @default(now())
-  updatedAt   DateTime @updatedAt
-  hospital    Hospital @relation(fields: [hospitalId], references: [id])
-  hospitalId  Int
+  createdAt   DateTime  @default(now())
+  updatedAt   DateTime  @updatedAt
+  hospital    Hospital? @relation(fields: [hospitalId], references: [id], onDelete: SetNull)
+  hospitalId  Int?
 }
 
 model TouristSpot {

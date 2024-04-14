@@ -5,7 +5,7 @@ export const ADMIN_NAVs = [
   { name: "ব্যাংক", path: "/dashboard/add-bank" },
   { name: "শিক্ষা প্রতিষ্ঠান", path: "/dashboard/add-education-place" },
   { name: "রেস্তোরাঁ", path: "/dashboard/add-restaurant" },
-  { name: "হাসপাতাল", path: "/dashboard/add-hospital" },
+  { name: "হাঁসপাতাল", path: "/dashboard/add-hospital" },
   { name: "ডাক্তার", path: "/dashboard/add-doctor" },
   { name: "দর্শনীয় স্থান", path: "/dashboard/add-tourist-place" },
   { name: "Show Users", path: "/dashboard/users" },

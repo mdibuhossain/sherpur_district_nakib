@@ -10,6 +10,9 @@ import AddUpazila from "./pages/dashboard/AddUpazila";
 import AllBlogs from "./pages/dashboard/AllBlogs";
 import AddBank from "./pages/dashboard/AddBank";
 import AddEducationPlace from "./pages/dashboard/AddEducationPlace";
+import AddRestaurant from "./pages/dashboard/AddRestaurant";
+import AddHospital from "./pages/dashboard/AddHospital";
+import AddDoctor from "./pages/dashboard/AddDoctor";
 
 function App() {
   return (
@@ -32,6 +35,9 @@ function App() {
             <Route path="add-upazila" element={<AddUpazila />} />
             <Route path="add-bank" element={<AddBank />} />
             <Route path="add-education-place" element={<AddEducationPlace />} />
+            <Route path="add-restaurant" element={<AddRestaurant />} />
+            <Route path="add-hospital" element={<AddHospital />} />
+            <Route path="add-doctor" element={<AddDoctor />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

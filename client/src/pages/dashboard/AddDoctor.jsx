@@ -1,92 +1,62 @@
 import React from "react";
 import axios from "axios";
-import "suneditor/dist/css/suneditor.min.css";
-import CustomEditor from "../../components/CustomEditor";
 
-const AddEducationPlace = () => {
-  const [educationPlaceList, setEducationPlaceList] = React.useState([]);
-  const [upazilaList, setUpazialList] = React.useState([]);
-  const [upazilaId, setUpazilaId] = React.useState(-1);
+const AddDoctor = () => {
+  const [doctorList, setDoctorList] = React.useState([]);
+  const [hospitalList, setHospitalList] = React.useState([]);
+  const [hospitalId, setHospitalId] = React.useState(-1);
   const [data, setData] = React.useState(null);
   const [action, setAction] = React.useState("create");
   const [blogLoading, setBlogLoading] = React.useState(false);
-  const [isBlogAdded, setIsBlogAdded] = React.useState(false);
-  const [isBlogPublished, setIsBlogPublished] = React.useState(false);
-  const [editorContent, setEditorContent] = React.useState("");
 
   React.useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place`)
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital/doctors`)
       .then((res) => {
-        setEducationPlaceList(res.data);
+        setDoctorList(res.data);
       });
   }, []);
 
   React.useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila`)
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital`)
       .then((res) => {
-        console.log(res.data);
-        setUpazialList(res.data);
+        setHospitalList(res.data);
       });
   }, []);
-
-  const handleIsBlogAdded = () => {
-    setIsBlogAdded(!isBlogAdded);
-  };
-
-  const handleIsBlogPublished = () => {
-    setIsBlogPublished(!isBlogPublished);
-  };
 
   const blogHandler = (target, method, _id) => {
     setBlogLoading(true);
     const payload = {
       name: target["name"].value,
-      address: target["address"].value,
       contact: target["contact"].value,
-      upazilaId: parseInt(target["upazilaId"].value),
+      designation: target["designation"].value,
+      hospitalId:
+        target["hospitalId"].value === "-1"
+          ? null
+          : parseInt(target["hospitalId"].value),
     };
-    const formData = new FormData();
-    formData.append("payload", JSON.stringify(payload));
-    if (isBlogAdded) {
-      formData.append(
-        "post",
-        JSON.stringify({
-          bannerImg: data?.description?.bannerImg || "",
-          postTitle: target["postTitle"].value,
-          content: target["content"].value,
-          isVisible: isBlogPublished,
-          id: data?.postId || null,
-        })
-      );
-      formData.append("image", target["bannerImg"].files[0]);
-    }
     try {
       axios[method](
-        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place${_id ? `/${_id}` : ""}`,
-        formData,
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital/doctors${_id ? `/${_id}` : ""}`,
+        payload,
         {
           withCredentials: true,
-          headers: {
-            "Content-Type": "multipart/form-data",
-          },
         }
       )
         .then((res) => {
           if (res.status === 201) {
             if (_id) {
-              setEducationPlaceList((pre) => {
-                const newEducationPlaceList = [...pre];
-                newEducationPlaceList[
-                  educationPlaceList.indexOf((info) => info.id === _id)
-                ] = res?.data;
-                return newEducationPlaceList;
+              setDoctorList((pre) => {
+                const newDoctorList = [...pre];
+                newDoctorList[doctorList.indexOf((info) => info.id === _id)] =
+                  res?.data;
+                return newDoctorList;
               });
-              alert("ব্যাংক তথ্য আপডেট হয়েছে");
+              alert("তথ্য আপডেট হয়েছে");
             } else {
-              setEducationPlaceList([...educationPlaceList, res.data]);
-              alert("ব্যাংক তথ্য যুক্ত হয়েছে");
+              setDoctorList([...doctorList, res.data]);
+              alert("নতুন তথ্য যুক্ত হয়েছে");
             }
           } else {
             console.log(res.data);
@@ -116,17 +86,15 @@ const AddEducationPlace = () => {
     try {
       axios
         .delete(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place/${id}`,
+          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital/doctors/${id}`,
           {
             withCredentials: true,
           }
         )
         .then((res) => {
           if (res.status === 204) {
-            const newEducationPlaceList = educationPlaceList.filter(
-              (info) => info.id !== id
-            );
-            setEducationPlaceList(newEducationPlaceList);
+            const newDoctorList = doctorList.filter((info) => info.id !== id);
+            setDoctorList(newDoctorList);
           }
         })
         .catch((err) => {
@@ -139,33 +107,34 @@ const AddEducationPlace = () => {
 
   const handleEnableEditing = async (blog) => {
     setData(blog);
-    setUpazilaId(blog?.upazilaId);
-    setEditorContent(blog?.description?.content);
-    setIsBlogAdded(!!blog?.postId);
-    setIsBlogPublished(!!blog?.description?.isVisible);
+    setHospitalId(blog?.hospitalId);
   };
 
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-        শিক্ষা প্রতিষ্ঠান তথ্য
+        ডাক্তার তালিকা
       </h2>
-      {educationPlaceList.length > 0 ? (
+      {doctorList.length > 0 ? (
         <table className="border-separate w-full border-spacing-y-2 text-sm">
           <thead className="text-left">
             <tr>
               <th className="ps-4">ID</th>
-              <th className="ps-4">Title</th>
-              <th className="ps-4">Available blog ID</th>
+              <th className="ps-4">Name</th>
+              <th className="ps-4">Designation</th>
+              <th className="ps-4">Contact</th>
+              <th className="ps-4">Hospital</th>
               <th className="ps-4">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {educationPlaceList.map((upazila) => (
+            {doctorList.map((upazila) => (
               <tr key={upazila.id}>
-                <td className="td-class">{upazila.id}</td>
-                <td className="td-class">{upazila.name}</td>
-                <td className="td-class">{upazila.postId}</td>
+                <td className="td-class">{upazila?.id}</td>
+                <td className="td-class">{upazila?.name}</td>
+                <td className="td-class">{upazila?.designation}</td>
+                <td className="td-class">{upazila?.contact}</td>
+                <td className="td-class">{upazila?.hospitalId}</td>
                 <td className="td-class flex space-x-3">
                   <button onClick={() => handleEnableEditing(upazila)}>
                     <svg
@@ -213,7 +182,7 @@ const AddEducationPlace = () => {
       )}
 
       <h6 className="mb-4 mt-10 font-bold text-gray-900">
-        নতুন শিক্ষা প্রতিষ্ঠান যুক্ত করুন
+        নতুন ডাক্তার যুক্ত করুন
       </h6>
       <form
         onSubmit={handleSubmit}
@@ -225,15 +194,15 @@ const AddEducationPlace = () => {
           type="text"
           defaultValue={data?.name}
           className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="শিক্ষা প্রতিষ্ঠানের নাম"
+          placeholder="ডাক্তার এর নাম"
         />
         <input
           required
-          name="address"
+          name="designation"
           type="text"
-          defaultValue={data?.address}
+          defaultValue={data?.designation}
           className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="ঠিকানা"
+          placeholder="পদবী"
         />
         <input
           required
@@ -244,55 +213,19 @@ const AddEducationPlace = () => {
           placeholder="যোগাযোগ"
         />
         <select
-          id="upazilaId"
-          name="upazilaId"
-          value={upazilaId}
-          onChange={(e) => setUpazilaId(e.target.value)}
+          id="hospitalId"
+          name="hospitalId"
+          value={hospitalId}
+          onChange={(e) => setHospitalId(e.target.value)}
           className="w-full appearance-none relative block px-3 py-2 border-b border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
         >
-          <option value={-1}>উপজেলা নির্বাচন করুন</option>
-          {upazilaList.map((upzila) => (
-            <option key={upzila.id} value={upzila.id}>
-              {upzila.name}
+          <option value={-1}>হাঁসপাতাল নির্বাচন করুন</option>
+          {hospitalList.map((hospital) => (
+            <option key={hospital.id} value={hospital.id}>
+              {hospital.name}
             </option>
           ))}
         </select>
-        <div className="px-3 py-2 flex flex-col space-y-2">
-          <label className="inline-flex items-center cursor-pointer">
-            <span className="me-3 text-sm text-gray-900">
-              ব্লগ যুক্ত করতে চান?
-            </span>
-            <input
-              type="checkbox"
-              value={isBlogAdded}
-              checked={isBlogAdded}
-              onChange={handleIsBlogAdded}
-              className="sr-only peer"
-            />
-            <div className="relative w-11 h-6 bg-zinc-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-          </label>
-          {isBlogAdded && (
-            <label className="inline-flex items-center cursor-pointer">
-              <span className="me-3 text-sm text-gray-900">
-                ব্লগ প্রকাশ করতে চান?
-              </span>
-              <input
-                type="checkbox"
-                value={isBlogPublished}
-                checked={isBlogPublished}
-                onChange={handleIsBlogPublished}
-                className="sr-only peer"
-              />
-              <div className="relative w-11 h-6 bg-zinc-400 peer-focus:outline-none rounded-full peer peer-checked:after:translate-x-full rtl:peer-checked:after:-translate-x-full peer-checked:after:border-white after:content-[''] after:absolute after:top-[2px] after:start-[2px] after:bg-gray-200 after:border-gray-300 after:border after:rounded-full after:h-5 after:w-5 after:transition-all peer-checked:bg-green-500"></div>
-            </label>
-          )}
-        </div>
-        <CustomEditor
-          oldData={data?.description}
-          isPostAdded={isBlogAdded}
-          editorContent={editorContent}
-          setEditorContent={setEditorContent}
-        />
         <button
           type="submit"
           onClick={() => setAction("create")}
@@ -322,4 +255,4 @@ const AddEducationPlace = () => {
   );
 };
 
-export default AddEducationPlace;
+export default AddDoctor;

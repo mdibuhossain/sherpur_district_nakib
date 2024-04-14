@@ -3,8 +3,8 @@ import axios from "axios";
 import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
-const AddEducationPlace = () => {
-  const [educationPlaceList, setEducationPlaceList] = React.useState([]);
+const AddHospital = () => {
+  const [hospitalList, setHospitalList] = React.useState([]);
   const [upazilaList, setUpazialList] = React.useState([]);
   const [upazilaId, setUpazilaId] = React.useState(-1);
   const [data, setData] = React.useState(null);
@@ -16,9 +16,10 @@ const AddEducationPlace = () => {
 
   React.useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place`)
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital`)
       .then((res) => {
-        setEducationPlaceList(res.data);
+        console.log(res.data);
+        setHospitalList(res.data);
       });
   }, []);
 
@@ -26,7 +27,6 @@ const AddEducationPlace = () => {
     axios
       .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila`)
       .then((res) => {
-        console.log(res.data);
         setUpazialList(res.data);
       });
   }, []);
@@ -45,6 +45,7 @@ const AddEducationPlace = () => {
       name: target["name"].value,
       address: target["address"].value,
       contact: target["contact"].value,
+      seats: parseInt(target["seats"].value),
       upazilaId: parseInt(target["upazilaId"].value),
     };
     const formData = new FormData();
@@ -64,7 +65,7 @@ const AddEducationPlace = () => {
     }
     try {
       axios[method](
-        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place${_id ? `/${_id}` : ""}`,
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital${_id ? `/${_id}` : ""}`,
         formData,
         {
           withCredentials: true,
@@ -76,17 +77,17 @@ const AddEducationPlace = () => {
         .then((res) => {
           if (res.status === 201) {
             if (_id) {
-              setEducationPlaceList((pre) => {
-                const newEducationPlaceList = [...pre];
-                newEducationPlaceList[
-                  educationPlaceList.indexOf((info) => info.id === _id)
+              setHospitalList((pre) => {
+                const newHospitalList = [...pre];
+                newHospitalList[
+                  hospitalList.indexOf((info) => info.id === _id)
                 ] = res?.data;
-                return newEducationPlaceList;
+                return newHospitalList;
               });
-              alert("ব্যাংক তথ্য আপডেট হয়েছে");
+              alert("তথ্য আপডেট হয়েছে");
             } else {
-              setEducationPlaceList([...educationPlaceList, res.data]);
-              alert("ব্যাংক তথ্য যুক্ত হয়েছে");
+              setHospitalList([...hospitalList, res.data]);
+              alert("নতুন তথ্য যুক্ত হয়েছে");
             }
           } else {
             console.log(res.data);
@@ -116,17 +117,17 @@ const AddEducationPlace = () => {
     try {
       axios
         .delete(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place/${id}`,
+          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/hospital/${id}`,
           {
             withCredentials: true,
           }
         )
         .then((res) => {
           if (res.status === 204) {
-            const newEducationPlaceList = educationPlaceList.filter(
+            const newHospitalList = hospitalList.filter(
               (info) => info.id !== id
             );
-            setEducationPlaceList(newEducationPlaceList);
+            setHospitalList(newHospitalList);
           }
         })
         .catch((err) => {
@@ -148,24 +149,30 @@ const AddEducationPlace = () => {
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-        শিক্ষা প্রতিষ্ঠান তথ্য
+        হাঁসপাতাল তথ্য
       </h2>
-      {educationPlaceList.length > 0 ? (
+      {hospitalList.length > 0 ? (
         <table className="border-separate w-full border-spacing-y-2 text-sm">
           <thead className="text-left">
             <tr>
               <th className="ps-4">ID</th>
-              <th className="ps-4">Title</th>
+              <th className="ps-4">Name</th>
+              <th className="ps-4">Seats</th>
+              <th className="ps-4">Address</th>
+              <th className="ps-4">Contact</th>
               <th className="ps-4">Available blog ID</th>
               <th className="ps-4">Actions</th>
             </tr>
           </thead>
           <tbody>
-            {educationPlaceList.map((upazila) => (
+            {hospitalList.map((upazila) => (
               <tr key={upazila.id}>
-                <td className="td-class">{upazila.id}</td>
-                <td className="td-class">{upazila.name}</td>
-                <td className="td-class">{upazila.postId}</td>
+                <td className="td-class">{upazila?.id}</td>
+                <td className="td-class">{upazila?.name}</td>
+                <td className="td-class">{upazila?.seats}</td>
+                <td className="td-class">{upazila?.address}</td>
+                <td className="td-class">{upazila?.contact}</td>
+                <td className="td-class">{upazila?.postId}</td>
                 <td className="td-class flex space-x-3">
                   <button onClick={() => handleEnableEditing(upazila)}>
                     <svg
@@ -213,7 +220,7 @@ const AddEducationPlace = () => {
       )}
 
       <h6 className="mb-4 mt-10 font-bold text-gray-900">
-        নতুন শিক্ষা প্রতিষ্ঠান যুক্ত করুন
+        নতুন হাঁসপাতাল যুক্ত করুন
       </h6>
       <form
         onSubmit={handleSubmit}
@@ -225,7 +232,15 @@ const AddEducationPlace = () => {
           type="text"
           defaultValue={data?.name}
           className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="শিক্ষা প্রতিষ্ঠানের নাম"
+          placeholder="হাঁসপাতালের নাম"
+        />
+        <input
+          required
+          name="seats"
+          type="number"
+          defaultValue={data?.seats}
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="সিট সংখ্যা"
         />
         <input
           required
@@ -322,4 +337,4 @@ const AddEducationPlace = () => {
   );
 };
 
-export default AddEducationPlace;
+export default AddHospital;
