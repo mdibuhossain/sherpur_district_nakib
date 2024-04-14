@@ -4,7 +4,12 @@ import { createPost, updatePost } from "../utils/utils.js";
 export class educationPlaceController {
   static getEducationPlaces = async (req, res) => {
     try {
-      const result = await prisma.educationPlace.findMany();
+      const result = await prisma.educationPlace.findMany({
+        include: {
+          description: true,
+          upazila: true,
+        },
+      });
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ errors: error.message });
@@ -18,6 +23,10 @@ export class educationPlaceController {
         where: {
           id: parseInt(id),
         },
+        include: {
+          description: true,
+          upazila: true,
+        },
       });
       return res.status(200).json(result);
     } catch (error) {
@@ -30,9 +39,11 @@ export class educationPlaceController {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
       if (post) {
+        post = JSON.parse(post);
+        delete post.id;
         payload.postId = await createPost(
-          JSON.parse(post),
-          req.file.filename,
+          post,
+          req?.file?.filename,
           req.user.id
         );
       }
@@ -40,6 +51,7 @@ export class educationPlaceController {
         data: payload,
         include: {
           description: true,
+          upazila: true,
         },
       });
       return res.status(201).json(result);
@@ -54,10 +66,17 @@ export class educationPlaceController {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
       if (post) {
-        payload.postId = await updatePost(
-          JSON.parse(post),
-          req?.file?.filename
-        );
+        post = JSON.parse(post);
+        if (post?.id) {
+          await updatePost(post, req?.file?.filename);
+        } else {
+          delete post.id;
+          payload.postId = await createPost(
+            post,
+            req?.file?.filename,
+            req.user.id
+          );
+        }
       }
       const result = await prisma.educationPlace.update({
         where: {
@@ -66,6 +85,7 @@ export class educationPlaceController {
         data: payload,
         include: {
           description: true,
+          upazila: true,
         },
       });
       return res.status(201).json(result);
@@ -75,14 +95,26 @@ export class educationPlaceController {
   };
 
   static deleteEducationPlace = async (req, res) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
+      const findData = await prisma.educationPlace.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
       await prisma.educationPlace.delete({
         where: {
           id: parseInt(id),
         },
       });
-      return res.status(204);
+      if (findData?.postId) {
+        await prisma.post.delete({
+          where: {
+            id: findData.postId,
+          },
+        });
+      }
+      return res.status(204).json();
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }

@@ -74,15 +74,21 @@ const AddBank = () => {
         }
       )
         .then((res) => {
-          if (_id) {
-            setBankList((pre) => {
-              const newBankList = [...pre];
-              newBankList[bankList.indexOf((info) => info.id === _id)] =
-                res?.data;
-              return newBankList;
-            });
+          if (res.status === 201) {
+            if (_id) {
+              setBankList((pre) => {
+                const newBankList = [...pre];
+                newBankList[bankList.indexOf((info) => info.id === _id)] =
+                  res?.data;
+                return newBankList;
+              });
+              alert("ব্যাংক তথ্য আপডেট হয়েছে");
+            } else {
+              setBankList([...bankList, res.data]);
+              alert("ব্যাংক তথ্য যুক্ত হয়েছে");
+            }
           } else {
-            setBankList([...bankList, res.data]);
+            console.log(res.data);
           }
         })
         .catch((err) => {

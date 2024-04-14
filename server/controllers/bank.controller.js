@@ -51,6 +51,7 @@ export class bankController {
         data: payload,
         include: {
           description: true,
+          upazila: true,
         },
       });
       return res.status(201).json(result);
@@ -69,6 +70,7 @@ export class bankController {
         if (post?.id) {
           await updatePost(post, req?.file?.filename);
         } else {
+          delete post.id;
           payload.postId = await createPost(
             post,
             req?.file?.filename,
@@ -83,6 +85,7 @@ export class bankController {
         data: payload,
         include: {
           description: true,
+          upazila: true,
         },
       });
       return res.status(201).json(result);

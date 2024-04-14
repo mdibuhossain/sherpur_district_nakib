@@ -3,7 +3,7 @@ export const ADMIN_NAVs = [
   { name: "জেলা পরিচিতি", path: "/dashboard/add-district-overview" },
   { name: "উপজেলা", path: "/dashboard/add-upazila" },
   { name: "ব্যাংক", path: "/dashboard/add-bank" },
-  { name: "স্কুল/কলেজ", path: "/dashboard/add-education-place" },
+  { name: "শিক্ষা প্রতিষ্ঠান", path: "/dashboard/add-education-place" },
   { name: "রেস্তোরাঁ", path: "/dashboard/add-restaurant" },
   { name: "হাসপাতাল", path: "/dashboard/add-hospital" },
   { name: "ডাক্তার", path: "/dashboard/add-doctor" },

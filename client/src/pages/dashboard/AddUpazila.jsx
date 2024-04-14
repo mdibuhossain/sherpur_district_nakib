@@ -59,16 +59,22 @@ const AddUpazila = () => {
         }
       )
         .then((res) => {
-          if (_id) {
-            setUpazilaList((pre) => {
-              const newDistrictInfoList = [...pre];
-              newDistrictInfoList[
-                upazilaList.indexOf((info) => info.id === _id)
-              ] = res?.data;
-              return newDistrictInfoList;
-            });
+          if (res.status === 201) {
+            if (_id) {
+              setUpazilaList((pre) => {
+                const newDistrictInfoList = [...pre];
+                newDistrictInfoList[
+                  upazilaList.indexOf((info) => info.id === _id)
+                ] = res?.data;
+                return newDistrictInfoList;
+              });
+              alert("উপজেলা তথ্য আপডেট হয়েছে");
+            } else {
+              setUpazilaList([...upazilaList, res.data]);
+              alert("উপজেলা তথ্য যুক্ত হয়েছে");
+            }
           } else {
-            setUpazilaList([...upazilaList, res.data]);
+            console.log(res.data);
           }
         })
         .catch((err) => {

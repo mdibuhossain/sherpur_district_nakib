@@ -69,6 +69,7 @@ export class upazilaController {
         if (post?.id) {
           await updatePost(post, req?.file?.filename);
         } else {
+          delete post.id;
           payload.postId = await createPost(
             post,
             req?.file?.filename,

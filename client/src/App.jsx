@@ -9,6 +9,7 @@ import RequireAuth from "./routes/PrivateRoute";
 import AddUpazila from "./pages/dashboard/AddUpazila";
 import AllBlogs from "./pages/dashboard/AllBlogs";
 import AddBank from "./pages/dashboard/AddBank";
+import AddEducationPlace from "./pages/dashboard/AddEducationPlace";
 
 function App() {
   return (
@@ -30,6 +31,7 @@ function App() {
             <Route path="blogs" element={<AllBlogs />} />
             <Route path="add-upazila" element={<AddUpazila />} />
             <Route path="add-bank" element={<AddBank />} />
+            <Route path="add-education-place" element={<AddEducationPlace />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

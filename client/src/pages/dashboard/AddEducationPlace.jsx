@@ -3,8 +3,10 @@ import axios from "axios";
 import "suneditor/dist/css/suneditor.min.css";
 import CustomEditor from "../../components/CustomEditor";
 
-const AddDistrictInfo = () => {
-  const [districtInfoList, setDistrictInfoList] = React.useState([]);
+const AddEducationPlace = () => {
+  const [educationPlaceList, setEducationPlaceList] = React.useState([]);
+  const [upazilaList, setUpazialList] = React.useState([]);
+  const [upazilaId, setUpazilaId] = React.useState(-1);
   const [data, setData] = React.useState(null);
   const [action, setAction] = React.useState("create");
   const [blogLoading, setBlogLoading] = React.useState(false);
@@ -14,9 +16,18 @@ const AddDistrictInfo = () => {
 
   React.useEffect(() => {
     axios
-      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info`)
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place`)
       .then((res) => {
-        setDistrictInfoList(res.data);
+        setEducationPlaceList(res.data);
+      });
+  }, []);
+
+  React.useEffect(() => {
+    axios
+      .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/upazila`)
+      .then((res) => {
+        console.log(res.data);
+        setUpazialList(res.data);
       });
   }, []);
 
@@ -31,7 +42,10 @@ const AddDistrictInfo = () => {
   const blogHandler = (target, method, _id) => {
     setBlogLoading(true);
     const payload = {
-      title: target["title"].value,
+      name: target["name"].value,
+      address: target["address"].value,
+      contact: target["contact"].value,
+      upazilaId: parseInt(target["upazilaId"].value),
     };
     const formData = new FormData();
     formData.append("payload", JSON.stringify(payload));
@@ -50,7 +64,7 @@ const AddDistrictInfo = () => {
     }
     try {
       axios[method](
-        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info${_id ? `/${_id}` : ""}`,
+        `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place${_id ? `/${_id}` : ""}`,
         formData,
         {
           withCredentials: true,
@@ -62,20 +76,20 @@ const AddDistrictInfo = () => {
         .then((res) => {
           if (res.status === 201) {
             if (_id) {
-              setDistrictInfoList((pre) => {
-                const newDistrictInfoList = [...pre];
-                newDistrictInfoList[
-                  districtInfoList.indexOf((info) => info.id === _id)
+              setEducationPlaceList((pre) => {
+                const newEducationPlaceList = [...pre];
+                newEducationPlaceList[
+                  educationPlaceList.indexOf((info) => info.id === _id)
                 ] = res?.data;
-                return newDistrictInfoList;
+                return newEducationPlaceList;
               });
-              alert("জেলা পরিচিতি সফলভাবে আপডেট হয়েছে");
+              alert("ব্যাংক তথ্য আপডেট হয়েছে");
             } else {
-              setDistrictInfoList([...districtInfoList, res.data]);
-              alert("জেলা পরিচিতি সফলভাবে যোগ করা হয়েছে");
+              setEducationPlaceList([...educationPlaceList, res.data]);
+              alert("ব্যাংক তথ্য যুক্ত হয়েছে");
             }
           } else {
-            console.log(res);
+            console.log(res.data);
           }
         })
         .catch((err) => {
@@ -102,15 +116,17 @@ const AddDistrictInfo = () => {
     try {
       axios
         .delete(
-          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info/${id}`,
-          { withCredentials: true }
+          `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place/${id}`,
+          {
+            withCredentials: true,
+          }
         )
         .then((res) => {
           if (res.status === 204) {
-            const newDistrictInfoList = districtInfoList.filter(
+            const newEducationPlaceList = educationPlaceList.filter(
               (info) => info.id !== id
             );
-            setDistrictInfoList(newDistrictInfoList);
+            setEducationPlaceList(newEducationPlaceList);
           }
         })
         .catch((err) => {
@@ -123,6 +139,7 @@ const AddDistrictInfo = () => {
 
   const handleEnableEditing = async (blog) => {
     setData(blog);
+    setUpazilaId(blog?.upazilaId);
     setEditorContent(blog?.description?.content);
     setIsBlogAdded(!!blog?.postId);
     setIsBlogPublished(!!blog?.description?.isVisible);
@@ -131,9 +148,9 @@ const AddDistrictInfo = () => {
   return (
     <>
       <h2 className="mb-6 text-center text-3xl font-bold text-gray-900">
-        জেলা পরিচিতি
+        শিক্ষা প্রতিষ্ঠান তথ্য
       </h2>
-      {districtInfoList.length > 0 ? (
+      {educationPlaceList.length > 0 ? (
         <table className="border-separate w-full border-spacing-y-2 text-sm">
           <thead className="text-left">
             <tr>
@@ -144,13 +161,13 @@ const AddDistrictInfo = () => {
             </tr>
           </thead>
           <tbody>
-            {districtInfoList.map((info) => (
-              <tr key={info.id}>
-                <td className="td-class">{info.id}</td>
-                <td className="td-class">{info.title}</td>
-                <td className="td-class">{info.postId}</td>
+            {educationPlaceList.map((upazila) => (
+              <tr key={upazila.id}>
+                <td className="td-class">{upazila.id}</td>
+                <td className="td-class">{upazila.name}</td>
+                <td className="td-class">{upazila.postId}</td>
                 <td className="td-class flex space-x-3">
-                  <button onClick={() => handleEnableEditing(info)}>
+                  <button onClick={() => handleEnableEditing(upazila)}>
                     <svg
                       clipRule="evenodd"
                       fillRule="evenodd"
@@ -168,7 +185,7 @@ const AddDistrictInfo = () => {
                       />
                     </svg>
                   </button>
-                  <button onClick={() => handleDelete(info.id)}>
+                  <button onClick={() => handleDelete(upazila.id)}>
                     <svg
                       clipRule="evenodd"
                       fillRule="evenodd"
@@ -196,7 +213,7 @@ const AddDistrictInfo = () => {
       )}
 
       <h6 className="mb-4 mt-10 font-bold text-gray-900">
-        নতুন জেলা পরিচিতি যোগ করুন
+        নতুন শিক্ষা প্রতিষ্ঠান যুক্ত করুন
       </h6>
       <form
         onSubmit={handleSubmit}
@@ -204,12 +221,42 @@ const AddDistrictInfo = () => {
       >
         <input
           required
-          name="title"
+          name="name"
           type="text"
-          defaultValue={data?.title}
-          className="appearance-none rounded-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 rounded-t-md focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
-          placeholder="মূল টাইটেল"
+          defaultValue={data?.name}
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="শিক্ষা প্রতিষ্ঠানের নাম"
         />
+        <input
+          required
+          name="address"
+          type="text"
+          defaultValue={data?.name}
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="ঠিকানা"
+        />
+        <input
+          required
+          name="contact"
+          type="text"
+          defaultValue={data?.name}
+          className="appearance-none relative block w-full px-3 py-2 border-b  border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+          placeholder="যোগাযোগ"
+        />
+        <select
+          id="upazilaId"
+          name="upazilaId"
+          value={upazilaId}
+          onChange={(e) => setUpazilaId(e.target.value)}
+          className="w-full appearance-none relative block px-3 py-2 border-b border-gray-300 placeholder-gray-500 text-gray-900 focus:outline-none focus:ring-indigo-500 focus:border-indigo-500 focus:z-10 sm:text-sm"
+        >
+          <option value={-1}>উপজেলা নির্বাচন করুন</option>
+          {upazilaList.map((upzila) => (
+            <option key={upzila.id} value={upzila.id}>
+              {upzila.name}
+            </option>
+          ))}
+        </select>
         <div className="px-3 py-2 flex flex-col space-y-2">
           <label className="inline-flex items-center cursor-pointer">
             <span className="me-3 text-sm text-gray-900">
@@ -275,4 +322,4 @@ const AddDistrictInfo = () => {
   );
 };
 
-export default AddDistrictInfo;
+export default AddEducationPlace;
