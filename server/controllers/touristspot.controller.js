@@ -4,7 +4,12 @@ import { createPost, updatePost } from "../utils/utils.js";
 export class touristspotController {
   static getTouristspots = async (req, res) => {
     try {
-      const result = await prisma.touristSpot.findMany();
+      const result = await prisma.touristSpot.findMany({
+        include: {
+          upazila: true,
+          description: true,
+        },
+      });
       return res.status(200).json(result);
     } catch (error) {
       return res.status(500).json({ errors: error.message });
@@ -18,6 +23,10 @@ export class touristspotController {
         where: {
           id: parseInt(id),
         },
+        include: {
+          upazila: true,
+          description: true,
+        },
       });
       return res.status(200).json(result);
     } catch (error) {
@@ -30,15 +39,18 @@ export class touristspotController {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
       if (post) {
+        post = JSON.parse(post);
+        delete post.id;
         payload.postId = await createPost(
-          JSON.parse(post),
-          req.file.filename,
+          post,
+          req?.file?.filename,
           req.user.id
         );
       }
       const result = await prisma.touristSpot.create({
         data: payload,
         include: {
+          upazila: true,
           description: true,
         },
       });
@@ -54,10 +66,17 @@ export class touristspotController {
       let { payload, post } = req.body;
       payload = JSON.parse(payload);
       if (post) {
-        payload.postId = await updatePost(
-          JSON.parse(post),
-          req?.file?.filename
-        );
+        post = JSON.parse(post);
+        if (post?.id) {
+          await updatePost(post, req?.file?.filename);
+        } else {
+          delete post.id;
+          payload.postId = await createPost(
+            post,
+            req?.file?.filename,
+            req.user.id
+          );
+        }
       }
       const result = await prisma.touristSpot.update({
         where: {
@@ -65,6 +84,7 @@ export class touristspotController {
         },
         data: payload,
         include: {
+          upazila: true,
           description: true,
         },
       });
@@ -75,14 +95,26 @@ export class touristspotController {
   };
 
   static deleteTouristspot = async (req, res) => {
+    const { id } = req.params;
     try {
-      const { id } = req.params;
+      const findData = await prisma.touristSpot.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+      });
       await prisma.touristSpot.delete({
         where: {
           id: parseInt(id),
         },
       });
-      return res.status(204);
+      if (findData?.postId) {
+        await prisma.post.delete({
+          where: {
+            id: findData.postId,
+          },
+        });
+      }
+      return res.status(204).json();
     } catch (error) {
       return res.status(500).json({ errors: error.message });
     }

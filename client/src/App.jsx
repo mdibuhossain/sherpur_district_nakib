@@ -13,6 +13,7 @@ import AddEducationPlace from "./pages/dashboard/AddEducationPlace";
 import AddRestaurant from "./pages/dashboard/AddRestaurant";
 import AddHospital from "./pages/dashboard/AddHospital";
 import AddDoctor from "./pages/dashboard/AddDoctor";
+import AddTouristPlace from "./pages/dashboard/AddTouristPlace";
 
 function App() {
   return (
@@ -38,6 +39,7 @@ function App() {
             <Route path="add-restaurant" element={<AddRestaurant />} />
             <Route path="add-hospital" element={<AddHospital />} />
             <Route path="add-doctor" element={<AddDoctor />} />
+            <Route path="add-tourist-place" element={<AddTouristPlace />} />
             <Route path="profile" element={<Profile />} />
           </Route>
         </Routes>

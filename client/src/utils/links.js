@@ -8,7 +8,7 @@ export const ADMIN_NAVs = [
   { name: "হাঁসপাতাল", path: "/dashboard/add-hospital" },
   { name: "ডাক্তার", path: "/dashboard/add-doctor" },
   { name: "দর্শনীয় স্থান", path: "/dashboard/add-tourist-place" },
-  { name: "Show Users", path: "/dashboard/users" },
+  // { name: "Show Users", path: "/dashboard/users" },
 ];
 
 export const USER_NAVs = [
