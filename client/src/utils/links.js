@@ -18,5 +18,5 @@ export const USER_NAVs = [
 
 export const COMMON_NAVs = [
   { name: "হোম", path: "/" },
-  { name: "প্রোফাইল", path: "/dashboard" },
+  { name: "Profile", path: "/dashboard/profile" },
 ];

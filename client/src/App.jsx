@@ -14,14 +14,16 @@ import AddRestaurant from "./pages/dashboard/AddRestaurant";
 import AddHospital from "./pages/dashboard/AddHospital";
 import AddDoctor from "./pages/dashboard/AddDoctor";
 import AddTouristPlace from "./pages/dashboard/AddTouristPlace";
+import MainLayout from "./pages/MainLayout";
 
 function App() {
   return (
     <BrowserRouter>
       <AuthProvider>
         <Routes>
-          <Route index element={<Home />} />
-          <Route path="login" element={<Login />} />
+          <Route path="/" element={<MainLayout />}>
+            <Route path="login" element={<Login />} />
+          </Route>
           <Route
             path="dashboard"
             element={
