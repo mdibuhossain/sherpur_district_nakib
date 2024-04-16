@@ -30,6 +30,39 @@ export class blogController {
     }
   }
 
+  static async getBlog(req, res) {
+    try {
+      const { id } = req.params;
+      const blog = await prisma.post.findUnique({
+        where: {
+          id: parseInt(id),
+        },
+        include: {
+          author: {
+            select: {
+              id: true,
+              role: true,
+              name: true,
+              username: true,
+              updatedAt: true,
+              createdAt: true,
+            },
+          },
+          banks: true,
+          upazilas: true,
+          hospitals: true,
+          restaurants: true,
+          districtInfo: true,
+          touristSpots: true,
+          educationPlaces: true,
+        },
+      });
+      res.status(200).json(blog);
+    } catch (error) {
+      res.status(500).json({ message: error.message });
+    }
+  }
+
   static async updateBlog(req, res) {
     try {
       const { id: _id } = req.params;

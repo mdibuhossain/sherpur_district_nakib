@@ -36,7 +36,7 @@ const Home = () => {
       ) : (
         <div className="grid grid-cols-2 gap-4">
           <div className="h-[400px]">
-            <Carousel slideInterval={1000}>
+            <Carousel slideInterval={1000} indicators={false}>
               {blogs.map((blog) => (
                 <div
                   key={blog.id}
@@ -45,7 +45,7 @@ const Home = () => {
                   <div className="w-full h-full overflow-hidden relative">
                     <NavLink
                       to={`/post/${blog.id}`}
-                      className="absolute bottom-24 left-14 z-50 text-white font-bold hover:text-yellow-200"
+                      className="absolute bottom-8 left-8 z-50 text-white font-bold hover:text-yellow-200"
                     >
                       <div className="">
                         <p className="text-3xl ">{blog.postTitle}</p>
@@ -54,7 +54,7 @@ const Home = () => {
                         </p>
                       </div>
                     </NavLink>
-                    <div className="absolute top-0 left-0 bg-gray-900 opacity-60 w-full h-full z-20" />
+                    <div className="absolute top-0 left-0 bg-gradient-to-t from-gray-900 opacity-75 w-full h-full z-20" />
                     <img
                       className="h-[400px] w-full hover:scale-110 hover:-rotate-1 transition-transform duration-500 ease-in-out -z-10"
                       src={`${import.meta.env.VITE_APP_PUBLIC_SERVER}/images/${blog.bannerImg}`}
@@ -77,10 +77,10 @@ const Home = () => {
                   <div className="w-full h-full absolute top-0 left-0 bg-gradient-to-t from-gray-900   opacity-80 group-hover:z-10" />
                   <NavLink
                     to={`/post/${blog.id}`}
-                    className="absolute bottom-8 left-8 text-white font-bold hover:text-yellow-200 group-hover:z-10"
+                    className="absolute bottom-4 left-4 text-white hover:text-yellow-200 group-hover:z-10"
                   >
                     <div className="">
-                      <p className="">{blog.postTitle}</p>
+                      <p className="font-normal">{blog.postTitle}</p>
                       <p className="text-xs font-normal">
                         {new Date(blog.createdAt).toDateString()}
                       </p>
