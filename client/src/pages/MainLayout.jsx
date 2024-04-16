@@ -1,18 +1,46 @@
 import { Avatar, Button, Dropdown, Navbar } from "flowbite-react";
-import { useContext } from "react";
+import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "../contexts/auth.context";
-import { Link, Outlet } from "react-router-dom";
+import { Link, NavLink, Outlet, useNavigate } from "react-router-dom";
+import axios from "axios";
 
 const MainLayout = () => {
   const { user, logout } = useContext(AuthContext);
+  const navigate = useNavigate();
+  const [allInfos, setAllInfos] = useState([]);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    const fetchAllInfos = async () => {
+      setLoading(true);
+      try {
+        axios
+          .get(
+            `${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/district-info/all`
+          )
+          .then((res) => {
+            setAllInfos(res.data);
+          })
+          .catch((error) => {
+            console.error(error);
+          })
+          .finally(() => setLoading(false));
+      } catch (error) {
+        console.error(error);
+        setLoading(false);
+      }
+    };
+    fetchAllInfos();
+  }, []);
+  console.log(allInfos);
   return (
-    <div className="max-w-screen-lg mx-auto">
-      <div className="flex flex-col">
+    <div className="mx-auto">
+      <div className="flex flex-col h-screen">
         <div>
           <Navbar fluid rounded>
-            <Navbar.Brand href="https://flowbite-react.com">
-              <a
-                href="#"
+            <Navbar.Brand>
+              <NavLink
+                to="/"
                 className="flex items-center space-x-3 rtl:space-x-reverse"
               >
                 <img
@@ -21,9 +49,9 @@ const MainLayout = () => {
                   alt="Flowbite Logo"
                 />
                 <span className="self-center text-2xl font-semibold whitespace-nowrap dark:text-white">
-                  Flowbite
+                  শেরপুর
                 </span>
-              </a>
+              </NavLink>
             </Navbar.Brand>
             <div className="flex md:order-2">
               {user ? (
@@ -45,10 +73,8 @@ const MainLayout = () => {
                         {user?.username}
                       </span>
                     </Dropdown.Header>
-                    <Dropdown.Item>
-                      <Link to="dashboard" className="font-normal">
-                        Dashboard
-                      </Link>
+                    <Dropdown.Item onClick={() => navigate("dashboard")}>
+                      Dashboard
                     </Dropdown.Item>
                     <Dropdown.Divider />
                     <Dropdown.Item onClick={logout}>Sign out</Dropdown.Item>
@@ -64,17 +90,193 @@ const MainLayout = () => {
               )}
             </div>
             <Navbar.Collapse>
-              <Navbar.Link href="#" active>
-                Home
-              </Navbar.Link>
-              <Navbar.Link href="#">About</Navbar.Link>
-              <Navbar.Link href="#">Services</Navbar.Link>
-              <Navbar.Link href="#">Pricing</Navbar.Link>
-              <Navbar.Link href="#">Contact</Navbar.Link>
+              <Dropdown
+                inline
+                label="শেরপুর জেলার পরিচিতি"
+                className="shadow-xl bg-gray-200"
+              >
+                {allInfos?.districtIntro?.map((info) => (
+                  <Dropdown.Item
+                    key={info.id}
+                    onClick={() =>
+                      info?.postId && navigate(`/post/${info?.postId}`)
+                    }
+                  >
+                    {info.title}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown>
+              <Dropdown inline label="উপজেলা" className="shadow-xl bg-gray-200">
+                {allInfos?.upazila?.map((info) => (
+                  <Dropdown.Item
+                    key={info.id}
+                    onClick={() =>
+                      info?.postId && navigate(`/post/${info?.postId}`)
+                    }
+                  >
+                    {info.name}
+                  </Dropdown.Item>
+                ))}
+              </Dropdown>
+              <Dropdown
+                label="দর্শনীয় স্থান"
+                inline
+                className="shadow-xl bg-gray-200"
+                dismissOnClick={false}
+              >
+                {allInfos?.upazila?.map(
+                  (info) =>
+                    info.touristSpots.length > 0 && (
+                      <Dropdown.Item key={info.id}>
+                        <Dropdown
+                          inline
+                          label={info.name}
+                          className="shadow-xl bg-gray-200"
+                        >
+                          {info.touristSpots.map((spot) => (
+                            <Dropdown.Item
+                              key={spot.id}
+                              onClick={() =>
+                                spot?.postId &&
+                                navigate(`/post/${spot?.postId}`)
+                              }
+                            >
+                              {spot.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown>
+                      </Dropdown.Item>
+                    )
+                )}
+              </Dropdown>
+              <Dropdown
+                label="ব্যাংক"
+                inline
+                className="shadow-xl bg-gray-200"
+                dismissOnClick={false}
+              >
+                {allInfos?.upazila?.map(
+                  (info) =>
+                    info.banks.length > 0 && (
+                      <Dropdown.Item key={info.id}>
+                        <Dropdown
+                          inline
+                          label={info.name}
+                          className="shadow-xl bg-gray-200"
+                        >
+                          {info.banks.map((item) => (
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() =>
+                                item?.postId &&
+                                navigate(`/post/${item?.postId}`)
+                              }
+                            >
+                              {item.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown>
+                      </Dropdown.Item>
+                    )
+                )}
+              </Dropdown>
+              <Dropdown
+                label="রেস্তোরাঁ"
+                inline
+                className="shadow-xl bg-gray-200"
+                dismissOnClick={false}
+              >
+                {allInfos?.upazila?.map(
+                  (info) =>
+                    info.restaurants.length > 0 && (
+                      <Dropdown.Item key={info.id}>
+                        <Dropdown
+                          inline
+                          label={info.name}
+                          className="shadow-xl bg-gray-200"
+                        >
+                          {info.restaurants.map((item) => (
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() =>
+                                item?.postId &&
+                                navigate(`/post/${item?.postId}`)
+                              }
+                            >
+                              {item.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown>
+                      </Dropdown.Item>
+                    )
+                )}
+              </Dropdown>
+              <Dropdown
+                label="হাসপাতাল"
+                inline
+                className="shadow-xl bg-gray-200"
+                dismissOnClick={false}
+              >
+                {allInfos?.upazila?.map(
+                  (info) =>
+                    info.hospitals.length > 0 && (
+                      <Dropdown.Item key={info.id}>
+                        <Dropdown
+                          inline
+                          label={info.name}
+                          className="shadow-xl bg-gray-200"
+                        >
+                          {info.hospitals.map((item) => (
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() =>
+                                item?.postId &&
+                                navigate(`/post/${item?.postId}`)
+                              }
+                            >
+                              {item.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown>
+                      </Dropdown.Item>
+                    )
+                )}
+              </Dropdown>
+              <Dropdown
+                label="শিক্ষা প্রতিষ্ঠান"
+                inline
+                className="shadow-xl bg-gray-200"
+                dismissOnClick={false}
+              >
+                {allInfos?.upazila?.map(
+                  (info) =>
+                    info.educationPlaces.length > 0 && (
+                      <Dropdown.Item key={info.id}>
+                        <Dropdown
+                          inline
+                          label={info.name}
+                          className="shadow-xl bg-gray-200"
+                        >
+                          {info.educationPlaces.map((item) => (
+                            <Dropdown.Item
+                              key={item.id}
+                              onClick={() =>
+                                item?.postId &&
+                                navigate(`/post/${item?.postId}`)
+                              }
+                            >
+                              {item.name}
+                            </Dropdown.Item>
+                          ))}
+                        </Dropdown>
+                      </Dropdown.Item>
+                    )
+                )}
+              </Dropdown>
             </Navbar.Collapse>
           </Navbar>
         </div>
-        <div className="px-[16px]">
+        <div className="px-[16px] h-screen overflow-y-auto">
           <Outlet />
         </div>
       </div>

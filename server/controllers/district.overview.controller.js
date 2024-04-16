@@ -14,6 +14,51 @@ export class districtOverviewController {
       return res.status(500).json({ errors: error.message });
     }
   }
+
+  static async getAllDistricInfos(req, res) {
+    try {
+      const districtIntro = await prisma.districtInfo.findMany({
+        include: {
+          description: true,
+        },
+      });
+      const upazila = await prisma.upazila.findMany({
+        include: {
+          description: true,
+          banks: {
+            include: {
+              description: true,
+            },
+          },
+          educationPlaces: {
+            include: {
+              description: true,
+            },
+          },
+          hospitals: {
+            include: {
+              description: true,
+            },
+          },
+          restaurants: {
+            include: {
+              description: true,
+            },
+          },
+          touristSpots: {
+            include: {
+              description: true,
+            },
+          },
+        },
+      });
+      const result = { districtIntro, upazila };
+      return res.status(200).json(result);
+    } catch (error) {
+      return res.status(500).json({ errors: error.message });
+    }
+  }
+
   static async getDistrictInfoById(req, res) {
     const { id } = req.params;
     try {

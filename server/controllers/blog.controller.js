@@ -3,12 +3,33 @@ import prisma from "../db/db.config.js";
 export class blogController {
   static async getAllBlogs(req, res) {
     try {
-      const blogs = await prisma.post.findMany();
+      const blogs = await prisma.post.findMany({
+        include: {
+          author: {
+            select: {
+              id: true,
+              role: true,
+              name: true,
+              username: true,
+              updatedAt: true,
+              createdAt: true,
+            },
+          },
+          banks: true,
+          upazilas: true,
+          hospitals: true,
+          restaurants: true,
+          districtInfo: true,
+          touristSpots: true,
+          educationPlaces: true,
+        },
+      });
       res.status(200).json(blogs);
     } catch (error) {
       res.status(500).json({ message: error.message });
     }
   }
+
   static async updateBlog(req, res) {
     try {
       const { id: _id } = req.params;
@@ -25,6 +46,7 @@ export class blogController {
       res.status(500).json({ message: error.message });
     }
   }
+
   static async deleteBlog(req, res) {
     try {
       const { id } = req.params;

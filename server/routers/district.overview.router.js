@@ -6,6 +6,7 @@ import { authMiddleware } from "../middlewares/auth.middleware.js";
 const districtOverviewRouter = express.Router();
 
 districtOverviewRouter.get("/", districtOverviewController.getDistricInfos);
+districtOverviewRouter.get("/all", districtOverviewController.getAllDistricInfos);
 districtOverviewRouter.get("/:id", districtOverviewController.getDistrictInfoById);
 districtOverviewRouter.post("/", authMiddleware, upload.single("image"), districtOverviewController.createDistrictInfo);
 districtOverviewRouter.put("/:id", authMiddleware, upload.single("image"), districtOverviewController.updateDistrictInfo);

@@ -15,6 +15,7 @@ import AddHospital from "./pages/dashboard/AddHospital";
 import AddDoctor from "./pages/dashboard/AddDoctor";
 import AddTouristPlace from "./pages/dashboard/AddTouristPlace";
 import MainLayout from "./pages/MainLayout";
+import ViewPost from "./pages/ViewPost";
 
 function App() {
   return (
@@ -22,7 +23,9 @@ function App() {
       <AuthProvider>
         <Routes>
           <Route path="/" element={<MainLayout />}>
+            <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
+            <Route path="post/:id" element={<ViewPost />} />
           </Route>
           <Route
             path="dashboard"
