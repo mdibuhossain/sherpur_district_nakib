@@ -2,14 +2,14 @@
   "name": "server",
   "version": "1.0.0",
   "description": "",
-  "main": "server.js",
+  "main": "index.js",
   "type": "module",
   "scripts": {
     "generate:prisma": "npx prisma generate",
     "migrate:prisma": "npx prisma migrate deploy --preview-feature",
     "start:prod": "npm run generate:prisma && npm run migrate:prisma && npm run dev",
-    "start": "node server.js",
-    "dev": "nodemon server.js",
+    "start": "node index.js",
+    "dev": "nodemon index.js",
     "test": "echo \"Error: no test specified\" && exit 1",
     "vercel-build": "echo Hello Vercel"
   },
