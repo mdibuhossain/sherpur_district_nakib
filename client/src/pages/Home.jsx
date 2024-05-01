@@ -87,7 +87,7 @@ const Home = () => {
                     </div>
                   </NavLink>
                   <img
-                    className="object-scale-down group-hover:scale-110 group-hover:-rotate-1 transition-transform duration-500 ease-in-out -z-10"
+                    className="w-full h-full group-hover:scale-110 group-hover:-rotate-1 transition-transform duration-500 ease-in-out -z-10"
                     src={`${import.meta.env.VITE_APP_PUBLIC_SERVER}/images/${blog.bannerImg}`}
                     crossOrigin="anonymous"
                     alt="banner"
