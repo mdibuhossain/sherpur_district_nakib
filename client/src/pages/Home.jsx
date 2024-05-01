@@ -6,11 +6,13 @@ import { Carousel } from "flowbite-react";
 const Home = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
-  const [loading, setLoading] = useState(true);
+  const [banks, setBanks] = useState([]);
+  const [bankLoading, setBankLoading] = useState(true);
+  const [blogLoading, setBlogLoading] = useState(true);
 
   useEffect(() => {
     const fetchPosts = async () => {
-      setLoading(true);
+      setBlogLoading(true);
       try {
         axios
           .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/blog`)
@@ -20,18 +22,39 @@ const Home = () => {
           .catch((error) => {
             console.log(error);
           })
-          .finally(() => setLoading(false));
+          .finally(() => setBlogLoading(false));
       } catch (error) {
         console.log(error);
-        setLoading(false);
+        setBlogLoading(false);
       }
     };
     fetchPosts();
   }, []);
 
+  useEffect(() => {
+    const fetchBank = async () => {
+      setBankLoading(true);
+      try {
+        axios
+          .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/bank`)
+          .then((res) => {
+            setBanks(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => setBankLoading(false));
+      } catch (error) {
+        console.log(error);
+        setBankLoading(false);
+      }
+    }
+    fetchBank();
+  }, []);
+
   return (
     <div>
-      {loading ? (
+      {blogLoading ? (
         <p>Loading...</p>
       ) : (
         <div className="grid grid-cols-2 gap-4">
@@ -100,7 +123,7 @@ const Home = () => {
       )}
 
       <Title>শেরপুর জেলার পরিচিতি</Title>
-      {loading ? (
+      {blogLoading ? (
         <p>Loading...</p>
       ) : (
         <div className="grid grid-cols-4 gap-3 mt-3">
@@ -138,7 +161,30 @@ const Home = () => {
         </div>
       )}
 
-      <Title>শেরপুর জেলার পরিচিতি</Title>
+      <Title>সকল ব্যাংক</Title>
+      {bankLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <div className="grid grid-cols-4 gap-3 mt-3">
+          {
+            banks?.map((bank) => (
+              <div key={bank?.id} className="flex ">
+                <div className="bg-gray-300 w-full flex flex-col justify-between rounded-lg overflow-hidden">
+                  <div className="p-3">
+                    <strong>{bank?.name?.trim()}</strong>
+                    <p className="text-xs">{bank?.address?.trim()}</p>
+                    <p className="text-xs">{bank?.contact?.trim()}</p>
+                  </div>
+                  <div className="p-3 bg-gray-200 text-sm">
+                    {bank?.upazila?.name?.trim()}
+                  </div>
+                </div>
+              </div>
+            )
+            )
+          }
+        </div>
+      )}
     </div>
   );
 };
