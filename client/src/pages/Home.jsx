@@ -7,6 +7,10 @@ const Home = () => {
   const navigate = useNavigate();
   const [blogs, setBlogs] = useState([]);
   const [banks, setBanks] = useState([]);
+  const [restaurants, setRestaurants] = useState([]);
+  const [educationPlaces, setEducationPlaces] = useState([]);
+  const [educationPlacesLoading, setEducationPlacesLoading] = useState(true);
+  const [restaurantLoading, setRestaurantLoading] = useState(true);
   const [bankLoading, setBankLoading] = useState(true);
   const [blogLoading, setBlogLoading] = useState(true);
 
@@ -50,6 +54,48 @@ const Home = () => {
       }
     }
     fetchBank();
+  }, []);
+
+  useEffect(() => {
+    const fetchRestaurant = async () => {
+      setRestaurantLoading(true);
+      try {
+        axios
+          .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/restaurant`)
+          .then((res) => {
+            setRestaurants(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => setRestaurantLoading(false));
+      } catch (error) {
+        console.log(error);
+        setRestaurantLoading(false);
+      }
+    }
+    fetchRestaurant();
+  }, []);
+
+  useEffect(() => {
+    const fetchEducationPlaces = async () => {
+      setEducationPlacesLoading(true);
+      try {
+        axios
+          .get(`${import.meta.env.VITE_APP_PUBLIC_SERVER}/api/education-place`)
+          .then((res) => {
+            setEducationPlaces(res.data);
+          })
+          .catch((error) => {
+            console.log(error);
+          })
+          .finally(() => setEducationPlacesLoading(false));
+      } catch (error) {
+        console.log(error);
+        setEducationPlacesLoading(false);
+      }
+    }
+    fetchEducationPlaces();
   }, []);
 
   return (
@@ -122,68 +168,125 @@ const Home = () => {
         </div>
       )}
 
-      <Title>শেরপুর জেলার পরিচিতি</Title>
       {blogLoading ? (
         <p>Loading...</p>
       ) : (
-        <div className="grid grid-cols-4 gap-3 mt-3">
-          {blogs.map((blog) => (
-            <div key={blog.id}>
-              <div className="flex space-x-2">
-                <div
-                  className="w-28 h-20 overflow-hidden cursor-pointer rounded-md"
-                  onClick={() => navigate(`/post/${blog?.id}`)}
-                >
-                  <img
-                    className="w-full h-full hover:scale-110 hover:-rotate-1 transition-transform duration-500 ease-in-out"
-                    src={`${import.meta.env.VITE_APP_PUBLIC_SERVER}/images/${blog.bannerImg}`}
-                    crossOrigin="anonymous"
-                    alt="banner"
-                  />
-                </div>
-                <div className="">
-                  <NavLink
-                    to={`/post/${blog.id}`}
-                    className="hover:text-indigo-500"
+        <>
+          <Title>শেরপুর জেলার পরিচিতি</Title>
+          <div className="grid grid-cols-4 gap-3 mt-3">
+            {blogs.map((blog) => (
+              <div key={blog.id}>
+                <div className="flex space-x-2">
+                  <div
+                    className="w-28 h-20 overflow-hidden cursor-pointer rounded-md"
+                    onClick={() => navigate(`/post/${blog?.id}`)}
                   >
-                    <p className="text-sm ">{blog.postTitle}</p>
-                  </NavLink>
-                  <p className="text-xs text-gray-400 font-medium">
-                    {new Date(blog.createdAt).toDateString()}
-                  </p>
-                  <p className="text-xs text-gray-400 font-medium">
-                    {blog.author.username}
-                  </p>
+                    <img
+                      className="w-full h-full hover:scale-110 hover:-rotate-1 transition-transform duration-500 ease-in-out"
+                      src={`${import.meta.env.VITE_APP_PUBLIC_SERVER}/images/${blog.bannerImg}`}
+                      crossOrigin="anonymous"
+                      alt="banner"
+                    />
+                  </div>
+                  <div className="">
+                    <NavLink
+                      to={`/post/${blog.id}`}
+                      className="hover:text-indigo-500"
+                    >
+                      <p className="text-sm ">{blog.postTitle}</p>
+                    </NavLink>
+                    <p className="text-xs text-gray-400 font-medium">
+                      {new Date(blog.createdAt).toDateString()}
+                    </p>
+                    <p className="text-xs text-gray-400 font-medium">
+                      {blog.author.username}
+                    </p>
+                  </div>
                 </div>
               </div>
-            </div>
-          ))}
-        </div>
+            ))}
+          </div>
+        </>
       )}
 
-      <Title>সকল ব্যাংক</Title>
       {bankLoading ? (
         <p>Loading...</p>
       ) : (
-        <div className="grid grid-cols-4 gap-3 mt-3">
-          {
-            banks?.map((bank) => (
-              <div key={bank?.id} className="flex ">
-                <div className="bg-gray-300 w-full flex flex-col justify-between rounded-lg overflow-hidden">
-                  <div className="p-3">
-                    <strong>{bank?.name?.trim()}</strong>
-                    <p className="text-xs">{bank?.address?.trim()}</p>
-                    <p className="text-xs">{bank?.contact?.trim()}</p>
-                  </div>
-                  <div className="p-3 bg-gray-200 text-sm">
-                    {bank?.upazila?.name?.trim()}
+        <>
+          <Title>সকল ব্যাংক</Title>
+          <div className="grid grid-cols-4 gap-3 mt-3">
+            {
+              banks?.map((bank) => (
+                <div key={bank?.id} className="flex ">
+                  <div className="bg-gray-300 w-full flex flex-col justify-between rounded-lg overflow-hidden">
+                    <div className="p-3">
+                      <strong>{bank?.name?.trim()}</strong>
+                      <p className="text-xs">{bank?.address?.trim()}</p>
+                      <p className="text-xs">{bank?.contact?.trim()}</p>
+                    </div>
+                    <div className="p-3 bg-gray-200 text-sm">
+                      {bank?.upazila?.name?.trim()}
+                    </div>
                   </div>
                 </div>
-              </div>
-            )
-            )
-          }
-        </div>
+              )
+              )
+            }
+          </div>
+        </>
+      )}
+
+      {restaurantLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <Title>সকল রেস্তোরাঁ</Title>
+          <div className="grid grid-cols-4 gap-3 mt-3">
+            {
+              restaurants?.map((restaurant) => (
+                <div key={restaurant?.id} className="flex ">
+                  <div className="bg-gray-300 w-full flex flex-col justify-between rounded-lg overflow-hidden">
+                    <div className="p-3">
+                      <strong>{restaurant?.name?.trim()}</strong>
+                      <p className="text-xs">{restaurant?.address?.trim()}</p>
+                      <p className="text-xs">{restaurant?.contact?.trim()}</p>
+                    </div>
+                    <div className="p-3 bg-gray-200 text-sm">
+                      {restaurant?.upazila?.name?.trim()}
+                    </div>
+                  </div>
+                </div>
+              )
+              )
+            }
+          </div>
+        </>
+      )}
+
+      {educationPlacesLoading ? (
+        <p>Loading...</p>
+      ) : (
+        <>
+          <Title>সকল শিক্ষা প্রতিষ্ঠান</Title>
+          <div className="grid grid-cols-4 gap-3 mt-3">
+            {
+              educationPlaces?.map((eduPlace) => (
+                <div key={eduPlace?.id} className="flex ">
+                  <div className="bg-gray-300 w-full flex flex-col justify-between rounded-lg overflow-hidden">
+                    <div className="p-3">
+                      <strong>{eduPlace?.name?.trim()}</strong>
+                      <p className="text-xs">{eduPlace?.address?.trim()}</p>
+                      <p className="text-xs">{eduPlace?.contact?.trim()}</p>
+                    </div>
+                    <div className="p-3 bg-gray-200 text-sm">
+                      {eduPlace?.upazila?.name?.trim()}
+                    </div>
+                  </div>
+                </div>
+              ))
+            }
+          </div>
+        </>
       )}
     </div>
   );

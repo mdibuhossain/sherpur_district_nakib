@@ -149,7 +149,7 @@ const MainLayout = () => {
                     )
                 )}
               </Dropdown>
-              <Dropdown
+              {/* <Dropdown
                 label="ব্যাংক"
                 inline
                 className="shadow-xl bg-gray-200"
@@ -179,8 +179,8 @@ const MainLayout = () => {
                       </Dropdown.Item>
                     )
                 )}
-              </Dropdown>
-              <Dropdown
+              </Dropdown> */}
+              {/* <Dropdown
                 label="রেস্তোরাঁ"
                 inline
                 className="shadow-xl bg-gray-200"
@@ -210,7 +210,7 @@ const MainLayout = () => {
                       </Dropdown.Item>
                     )
                 )}
-              </Dropdown>
+              </Dropdown> */}
               <Dropdown
                 label="হাসপাতাল"
                 inline
@@ -242,7 +242,7 @@ const MainLayout = () => {
                     )
                 )}
               </Dropdown>
-              <Dropdown
+              {/* <Dropdown
                 label="শিক্ষা প্রতিষ্ঠান"
                 inline
                 className="shadow-xl bg-gray-200"
@@ -272,7 +272,7 @@ const MainLayout = () => {
                       </Dropdown.Item>
                     )
                 )}
-              </Dropdown>
+              </Dropdown> */}
             </Navbar.Collapse>
           </Navbar>
         </div>
