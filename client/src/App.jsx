@@ -17,6 +17,8 @@ import AddTouristPlace from "./pages/dashboard/AddTouristPlace";
 import MainLayout from "./pages/MainLayout";
 import PostView from "./pages/PostView";
 import HospitalView from "./pages/HospitalView";
+import Contact from "./pages/Contact";
+import MailBox from "./pages/dashboard/MailBox";
 
 function App() {
   return (
@@ -28,6 +30,7 @@ function App() {
             <Route path="login" element={<Login />} />
             <Route path="post/:id" element={<PostView />} />
             <Route path="hospital/:id" element={<HospitalView />} />
+            <Route path="contact" element={<Contact />} />
           </Route>
           <Route
             path="dashboard"
@@ -38,6 +41,7 @@ function App() {
             }
           >
             <Route index element={<Profile />} />
+            <Route path="mail" element={<MailBox />} />
             <Route path="add-district-overview" element={<AddDistrictInfo />} />
             <Route path="blogs" element={<AllBlogs />} />
             <Route path="add-upazila" element={<AddUpazila />} />

@@ -154,3 +154,13 @@ model TouristSpot {
   upazilaId   Int
   postId      Int?
 }
+
+model Mail {
+  id        Int      @id @default(autoincrement())
+  name      String
+  email     String
+  subject   String
+  message   String
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+}

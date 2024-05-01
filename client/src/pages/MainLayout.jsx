@@ -273,6 +273,9 @@ const MainLayout = () => {
                     )
                 )}
               </Dropdown> */}
+              <Navbar.Link as={NavLink} to="/contact">
+                যোগাযোগ
+              </Navbar.Link>
             </Navbar.Collapse>
           </Navbar>
         </div>

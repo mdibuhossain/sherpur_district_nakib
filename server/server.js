@@ -15,6 +15,7 @@ import hospitalRouter from "./routers/hospital.router.js";
 import restaurantRouter from "./routers/restaurant.router.js";
 import touristSpotRouter from "./routers/touristspot.router.js";
 import upazilaRouter from "./routers/upazila.router.js";
+import mailRouter from "./routers/mail.router.js";
 
 const __dirname = path.dirname(fileURLToPath(import.meta.url));
 
@@ -41,6 +42,7 @@ app.use("/api/hospital", hospitalRouter);
 app.use("/api/restaurant", restaurantRouter);
 app.use("/api/touristspot", touristSpotRouter);
 app.use("/api/upazila", upazilaRouter);
+app.use("/api/mail", mailRouter);
 
 app.get("/", (req, res) => {
   res.send("Server is ready");

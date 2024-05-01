@@ -1,4 +1,5 @@
 export const ADMIN_NAVs = [
+  { name: "মেইল", path: "/dashboard/mail" },
   { name: "সকল ব্লগ", path: "/dashboard/blogs" },
   { name: "জেলা পরিচিতি", path: "/dashboard/add-district-overview" },
   { name: "উপজেলা", path: "/dashboard/add-upazila" },
