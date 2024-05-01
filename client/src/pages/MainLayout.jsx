@@ -89,7 +89,7 @@ const MainLayout = () => {
                 </Link>
               )}
             </div>
-            <Navbar.Collapse>
+            <Navbar.Collapse className="relative z-50">
               <Dropdown
                 inline
                 label="শেরপুর জেলার পরিচিতি"

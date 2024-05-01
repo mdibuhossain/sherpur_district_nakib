@@ -74,7 +74,7 @@ const Home = () => {
                 onClick={() => navigate(`/post/${blog?.id}`)}
               >
                 <div className="overflow-hidden relative h-full ">
-                  <div className="w-full h-full absolute top-0 left-0 bg-gradient-to-t from-gray-900   opacity-80 group-hover:z-10" />
+                  <div className="w-full h-full absolute top-0 left-0 bg-gradient-to-t from-gray-900 opacity-80 group-hover:z-10" />
                   <NavLink
                     to={`/post/${blog.id}`}
                     className="absolute bottom-4 left-4 text-white hover:text-yellow-200 group-hover:z-10"
@@ -137,6 +137,8 @@ const Home = () => {
           ))}
         </div>
       )}
+
+      <Title>শেরপুর জেলার পরিচিতি</Title>
     </div>
   );
 };
