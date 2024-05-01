@@ -230,8 +230,8 @@ const MainLayout = () => {
                             <Dropdown.Item
                               key={item.id}
                               onClick={() =>
-                                item?.postId &&
-                                navigate(`/post/${item?.postId}`)
+                                // item?.postId &&
+                                navigate(`/hospital/${item?.id}`)
                               }
                             >
                               {item.name}

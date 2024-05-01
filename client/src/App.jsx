@@ -15,7 +15,8 @@ import AddHospital from "./pages/dashboard/AddHospital";
 import AddDoctor from "./pages/dashboard/AddDoctor";
 import AddTouristPlace from "./pages/dashboard/AddTouristPlace";
 import MainLayout from "./pages/MainLayout";
-import ViewPost from "./pages/ViewPost";
+import PostView from "./pages/PostView";
+import HospitalView from "./pages/HospitalView";
 
 function App() {
   return (
@@ -25,7 +26,8 @@ function App() {
           <Route path="/" element={<MainLayout />}>
             <Route index element={<Home />} />
             <Route path="login" element={<Login />} />
-            <Route path="post/:id" element={<ViewPost />} />
+            <Route path="post/:id" element={<PostView />} />
+            <Route path="hospital/:id" element={<HospitalView />} />
           </Route>
           <Route
             path="dashboard"

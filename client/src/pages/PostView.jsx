@@ -2,7 +2,7 @@ import axios from "axios";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 
-const ViewPost = () => {
+const PostView = () => {
   const { id } = useParams();
   const [post, setPost] = useState({});
   const [loading, setLoading] = useState(true);
@@ -58,4 +58,4 @@ const ViewPost = () => {
   );
 };
 
-export default ViewPost;
+export default PostView;
