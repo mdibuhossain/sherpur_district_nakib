@@ -21,6 +21,8 @@ export class authController {
         });
         res.cookie("token", token, {
           httpOnly: true,
+          sameSite: "None",
+          secure: true,
           maxAge: 1000 * 60 * 60 * 24 * 7,
         });
         // console.log(findUser);

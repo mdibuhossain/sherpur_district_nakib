@@ -1,0 +1,4 @@
+PGPASSWORD=PGAtWIgeevKPEHe5fuaxFWAoZqbFBM2X
+
+
+psql -h dpg-copcur779t8c73fsk510-a.singapore-postgres.render.com:5432 -U sherpurdb_user sherpurdb < s_dump.sql
